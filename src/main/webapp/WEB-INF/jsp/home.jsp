@@ -44,8 +44,9 @@ and is wrapped around the whole page content, except for the footer in this exam
   	<div class="w3-container w3-padding w3-black">
           <h5>Enter the name of a movie below</h5>
   	</div>
-   	<p><input class="w3-input w3-border" type="text" placeholder="Enter movie" style="width:100%"></p>
-   <form action="/api" method="GET">
+  	<form action="/api" method="POST">
+   	<p><input class="w3-input w3-border" type="text" name="j_username" placeholder="Enter movie" style="width:100%"></p>
+   
    		<!-- <input type="submit" value="Submit" /> -->
     <p><button type="submit" value="Submit" onclick="document.getElementById('subscribe').style.display='block'" class="w3-button w3-block w3-cyan">Find Movie!</button></p>
   	 </form> 
