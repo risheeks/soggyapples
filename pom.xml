@@ -50,6 +50,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+    		<groupId>com.vliolios</groupId>
+    		<artifactId>themoviedb-java-kit</artifactId>
+    		<version>0.1.0</version>
+		</dependency>
+		<dependency>
   			<groupId>com.google.firebase</groupId>
   			<artifactId>firebase-admin</artifactId>
   			<version>6.6.0</version>
