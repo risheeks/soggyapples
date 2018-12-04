@@ -35,8 +35,8 @@
 	<div class="container">
 
 		<div class="starter-template">
-			<h1>Spring Boot Web JSP Example</h1>
-			<h2>Message: ${message}</h2>
+			<h1 class="w3-xxxlarge"><b>SOGGY APPLES</b></h1>
+			<h2>Search: "${title}"</h2>
 		</div>
 
 	</div>
@@ -44,11 +44,15 @@
 	<script type="text/javascript" src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	
 	<table class="table table-striped">
-	
+		<tr>
+				<th>Poster</th>
+				<th>Title</th>
+				<th>Description</th>
+		</tr>
 		<c:forEach items="${movies}" var="movie">
 					<c id="products">
 					<tr>
-						<td><img style="size:50%" src="https://image.tmdb.org/t/p/w500/${movie.posterPath}"/></td>
+						<td><a href="/pick-${movie.title}" ><img style="size:20%" src="https://image.tmdb.org/t/p/w500/${movie.posterPath}"/></a></td>
 						<td>${movie.title}</td>
 						<td>${movie.description}</td>
 					</tr>
