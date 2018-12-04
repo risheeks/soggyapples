@@ -51,7 +51,7 @@ and is wrapped around the whole page content, except for the footer in this exam
    	<p><input class="w3-input w3-border" type="text" name="j_username" placeholder="Enter movie" ></p>
    
    		<!-- <input type="submit" value="Submit" /> -->
-    <p><button type="submit" value="Submit" onclick="document.getElementById('subscribe').style.display='block'" class="w3-button w3-block w3-cyan">Find Movie!</button></p>
+    <p><button type="submit" value="Submit" class="w3-button w3-block w3-cyan">Find Movie!</button></p>
   	 </form> 
   </div>
   

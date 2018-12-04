@@ -7,6 +7,7 @@ public class Movie {
 	String posterPath;
 	String description;
 	Date date;
+	int votes;
 	
 	public Movie(String title) {
 		this.title = title;
