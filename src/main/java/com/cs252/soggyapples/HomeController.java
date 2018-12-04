@@ -46,21 +46,19 @@ public class HomeController {
     public String welcome(Map<String, Object> model) throws IOException {
     	String name = "AYudsh";
     	
-    	
-    	
-		try {
-			FileInputStream serviceAccount = new FileInputStream("/Users/risheek/projects/soggyapples/src/main/webapp/WEB-INF/serviceAccountKey.json");
-			FirebaseOptions options = new FirebaseOptions.Builder()
-				    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-				    .setDatabaseUrl("https://soggyapples-110e5.firebaseio.com/")
-				    .build();
-			FirebaseApp.initializeApp(options);
-			mDatabase = FirebaseDatabase.getInstance().getReference();
-	    	mDatabase.child("users").child("Users").setValueAsync(name);
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//		try {
+//			FileInputStream serviceAccount = new FileInputStream("/Users/risheek/projects/soggyapples/src/main/webapp/WEB-INF/serviceAccountKey.json");
+//			FirebaseOptions options = new FirebaseOptions.Builder()
+//				    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+//				    .setDatabaseUrl("https://soggyapples-110e5.firebaseio.com/")
+//				    .build();
+//			FirebaseApp.initializeApp(options);
+//			mDatabase = FirebaseDatabase.getInstance().getReference();
+//	    	mDatabase.child("users").child("Users").setValueAsync(name);
+//            
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 	
         model.put("message", this.message);
         return "/home";
@@ -69,20 +67,20 @@ public class HomeController {
     public String api(@RequestParam("title") String title, HttpServletRequest request) throws IOException {
 		String name = "AYudsh";
 		List<Movie> movies = new ArrayList<Movie>();
-		try {
-			FileInputStream serviceAccount = new FileInputStream("/Users/risheek/projects/soggyapples/src/main/webapp/WEB-INF/serviceAccountKey.json");
-			FirebaseOptions options = new FirebaseOptions.Builder()
-				    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-				    .setDatabaseUrl("https://soggyapples-110e5.firebaseio.com/")
-				    .build();
-			FirebaseApp.initializeApp(options);
-			
-			mDatabase = FirebaseDatabase.getInstance().getReference();
-	    	mDatabase.child("users").child("Users").setValueAsync(name);
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//		try {
+//			FileInputStream serviceAccount = new FileInputStream("/Users/risheek/projects/soggyapples/src/main/webapp/WEB-INF/serviceAccountKey.json");
+//			FirebaseOptions options = new FirebaseOptions.Builder()
+//				    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+//				    .setDatabaseUrl("https://soggyapples-110e5.firebaseio.com/")
+//				    .build();
+//			FirebaseApp.initializeApp(options);
+//			
+//			mDatabase = FirebaseDatabase.getInstance().getReference();
+//	    	mDatabase.child("users").child("Users").setValueAsync(name);
+//            
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 		try {
 			String res = sendGet(title);
 			JSONObject obj = new JSONObject(res);
@@ -92,8 +90,8 @@ public class HomeController {
 			for (int i = 0; i < arr.length(); i++)
 			{
 				movies.add(new Movie(arr.getJSONObject(i).getString("title"), arr.getJSONObject(i).getString("poster_path"), arr.getJSONObject(i).getString("overview"), arr.getJSONObject(i).getString("release_date")));
-			    String post_id = arr.getJSONObject(i).getString("poster_path");
-			    post_id = baseURL + post_id.substring(1);
+//			    String post_id = arr.getJSONObject(i).getString("poster_path");
+//			    post_id = baseURL + post_id.substring(1);
 			   
 			}
 		} catch (Exception e) {

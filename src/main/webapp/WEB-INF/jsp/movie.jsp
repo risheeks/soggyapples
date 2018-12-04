@@ -51,9 +51,10 @@
 		</tr>
 		<c:forEach items="${movies}" var="movie">
 					<c id="products">
+					
 					<tr>
-						<td><a href="/pick-${movie.title}" ><img style="size:20%" src="https://image.tmdb.org/t/p/w500/${movie.posterPath}"/></a></td>
-						<td>${movie.title}</td>
+						<td><a href="/pick-${movie.title}" ><img height="100" width="100" src="https://image.tmdb.org/t/p/w500/${movie.posterPath}"/></a></td>
+						<td><a href="/pick-${movie.title}" >${movie.title}</a></td>
 						<td>${movie.description}</td>
 					</tr>
 					</c>
