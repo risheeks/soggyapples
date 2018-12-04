@@ -6,7 +6,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,14 +35,16 @@ public class HomeController {
 	
 	@Value("${home.message}")
     private String message;
-	private String baseURL = "https://image.tmdb.org/t/p/w500";
+	private String baseURL = "https://image.tmdb.org/t/p/w500/aLHjjXmX7VKo3W3HkSGnqe3d7pA.jpg";
 	
 	@RequestMapping(value = { "/" }, method = RequestMethod.GET)
     public String welcome(Map<String, Object> model) throws IOException {
     	String name = "AYudsh";
-		
+    	
+    	
+    	
 		try {
-			FileInputStream serviceAccount = new FileInputStream("/Users/SiD/Desktop/coding/soggyapples/src/main/webapp/WEB-INF/serviceAccountKey.json");
+			FileInputStream serviceAccount = new FileInputStream("/Users/risheek/projects/soggyapples/src/main/webapp/WEB-INF/serviceAccountKey.json");
 			FirebaseOptions options = new FirebaseOptions.Builder()
 				    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
 				    .setDatabaseUrl("https://soggyapples-110e5.firebaseio.com/")
@@ -53,12 +61,11 @@ public class HomeController {
         return "/home";
     }
 	@RequestMapping(value = { "/api" }, method = RequestMethod.POST)
-    public String api(@RequestParam("j_username") 
-	String username) throws IOException {
+    public String api(@RequestParam("j_username") String username, HttpServletRequest request) throws IOException {
 		String name = "AYudsh";
-		
+		Set<Movie> movies = new HashSet<Movie>();
 		try {
-			FileInputStream serviceAccount = new FileInputStream("/Users/SiD/Desktop/coding/soggyapples/src/main/webapp/WEB-INF/serviceAccountKey.json");
+			FileInputStream serviceAccount = new FileInputStream("/Users/risheek/projects/soggyapples/src/main/webapp/WEB-INF/serviceAccountKey.json");
 			FirebaseOptions options = new FirebaseOptions.Builder()
 				    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
 				    .setDatabaseUrl("https://soggyapples-110e5.firebaseio.com/")
@@ -72,15 +79,17 @@ public class HomeController {
             e.printStackTrace();
         }
 		try {
-			String res = sendGet(username);
+			String res = sendGet("Jumanji");
 			JSONObject obj = new JSONObject(res);
 			
 
 			JSONArray arr = obj.getJSONArray("results");
 			for (int i = 0; i < arr.length(); i++)
 			{
-			    String post_id = arr.getJSONObject(i).getString("title");
-			    System.out.println(post_id);
+				movies.add(new Movie(arr.getJSONObject(i).getString("title"), arr.getJSONObject(i).getString("poster_path"), arr.getJSONObject(i).getString("overview"), arr.getJSONObject(i).getString("release_date")));
+			    String post_id = arr.getJSONObject(i).getString("poster_path");
+			    post_id = baseURL + post_id.substring(1);
+			    System.out.println(movies.size());
 			   
 			}
 		} catch (Exception e) {
@@ -88,7 +97,9 @@ public class HomeController {
 			e.printStackTrace();
 		}
         //model.put("message", this.message);
-        return "/home";
+		HttpSession session = request.getSession();
+		session.setAttribute("movies", movies);
+        return "/movie";
     }
 	private String sendGet(String title) throws Exception {
 		
