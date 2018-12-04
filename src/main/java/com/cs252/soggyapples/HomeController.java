@@ -22,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -65,7 +66,7 @@ public class HomeController {
         return "/home";
     }
 	@RequestMapping(value = { "/api" }, method = RequestMethod.POST)
-    public String api(@RequestParam("j_username") String username, HttpServletRequest request) throws IOException {
+    public String api(@RequestParam("title") String title, HttpServletRequest request) throws IOException {
 		String name = "AYudsh";
 		List<Movie> movies = new ArrayList<Movie>();
 		try {
@@ -83,7 +84,7 @@ public class HomeController {
             e.printStackTrace();
         }
 		try {
-			String res = sendGet(username);
+			String res = sendGet(title);
 			JSONObject obj = new JSONObject(res);
 			
 
@@ -100,11 +101,19 @@ public class HomeController {
 			e.printStackTrace();
 		}
 
-        //model.put("message", this.message);
 		HttpSession session = request.getSession();
 		session.setAttribute("movies", movies);
+		session.setAttribute("title", title);
         return "/movie";
     }
+	
+	@RequestMapping(value = { "/pick-{title}" }, method = RequestMethod.GET)
+    public String pick(@PathVariable String title, HttpServletRequest request) throws IOException {
+		HttpSession session = request.getSession();
+		session.setAttribute("movie", title);
+		return "/pick";
+	}
+	
 	private String sendGet(String title) throws Exception {
 		
 		
