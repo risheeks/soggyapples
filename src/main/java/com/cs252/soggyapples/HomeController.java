@@ -7,8 +7,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -64,7 +67,7 @@ public class HomeController {
 	@RequestMapping(value = { "/api" }, method = RequestMethod.POST)
     public String api(@RequestParam("j_username") String username, HttpServletRequest request) throws IOException {
 		String name = "AYudsh";
-		Set<Movie> movies = new HashSet<Movie>();
+		List<Movie> movies = new ArrayList<Movie>();
 		try {
 			FileInputStream serviceAccount = new FileInputStream("/Users/risheek/projects/soggyapples/src/main/webapp/WEB-INF/serviceAccountKey.json");
 			FirebaseOptions options = new FirebaseOptions.Builder()
@@ -96,6 +99,7 @@ public class HomeController {
 			
 			e.printStackTrace();
 		}
+
         //model.put("message", this.message);
 		HttpSession session = request.getSession();
 		session.setAttribute("movies", movies);
@@ -104,7 +108,7 @@ public class HomeController {
 	private String sendGet(String title) throws Exception {
 		
 		
-		String url = "https://api.themoviedb.org/3/search/movie?api_key=5b85ae54ca7b9e80f18626c3b0fd285b&query="+ URLEncoder.encode(title, "UTF-8");
+		String url = "https://api.themoviedb.org/3/search/movie?api_key=5b85ae54ca7b9e80f18626c3b0fd285b&query="+ URLEncoder.encode(title, "UTF-8")+"&sort_by=popularity";
 		
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
