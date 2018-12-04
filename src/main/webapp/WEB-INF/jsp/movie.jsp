@@ -42,18 +42,19 @@
 	</div>
 	
 	<script type="text/javascript" src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-	<img src="https://image.tmdb.org/t/p/w500/aLHjjXmX7VKo3W3HkSGnqe3d7pA.jpg" >
 	
-	<c:forEach items="${movies}" var="movie">
-				<c id="products">
-				<tr>
-					<td><img src="https://image.tmdb.org/t/p/w500/${movie.posterPath}"/></td>
-					<td>${movie.title}</td>
-					<td>${movie.description}</td>
-				</tr>
-				</c>
-			</c:forEach>
+	<table class="table table-striped">
+	
+		<c:forEach items="${movies}" var="movie">
+					<c id="products">
+					<tr>
+						<td><img style="size:50%" src="https://image.tmdb.org/t/p/w500/${movie.posterPath}"/></td>
+						<td>${movie.title}</td>
+						<td>${movie.description}</td>
+					</tr>
+					</c>
+		</c:forEach>
+	</table>
 
 </body>
 

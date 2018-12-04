@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
@@ -79,7 +80,7 @@ public class HomeController {
             e.printStackTrace();
         }
 		try {
-			String res = sendGet("Jumanji");
+			String res = sendGet(username);
 			JSONObject obj = new JSONObject(res);
 			
 
@@ -89,7 +90,6 @@ public class HomeController {
 				movies.add(new Movie(arr.getJSONObject(i).getString("title"), arr.getJSONObject(i).getString("poster_path"), arr.getJSONObject(i).getString("overview"), arr.getJSONObject(i).getString("release_date")));
 			    String post_id = arr.getJSONObject(i).getString("poster_path");
 			    post_id = baseURL + post_id.substring(1);
-			    System.out.println(movies.size());
 			   
 			}
 		} catch (Exception e) {
@@ -103,7 +103,8 @@ public class HomeController {
     }
 	private String sendGet(String title) throws Exception {
 		
-		String url = "https://api.themoviedb.org/3/search/movie?api_key=5b85ae54ca7b9e80f18626c3b0fd285b&query="+title;
+		
+		String url = "https://api.themoviedb.org/3/search/movie?api_key=5b85ae54ca7b9e80f18626c3b0fd285b&query="+ URLEncoder.encode(title, "UTF-8");
 		
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -131,7 +132,6 @@ public class HomeController {
 		//System.out.println(response.toString());
 
 	}
-	
-    
+	    
 
 }
