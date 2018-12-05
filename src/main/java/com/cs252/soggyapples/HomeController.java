@@ -170,25 +170,10 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value = { "/pick-{id}" }, method = RequestMethod.POST)
-    public String update(@PathVariable String id, HttpServletRequest request) throws IOException {
-		HttpSession session = request.getSession();
-		//session.setAttribute("movie", id);
-		Movie movie = new Movie();
-		try {
-			String res = sendGet(id, searchURL);
-			JSONObject obj = new JSONObject(res);
-
-			JSONArray arr = obj.getJSONArray("results");
-			for (int i = 0; i < arr.length(); i++)
-			{
-				movie = (new Movie(arr.getJSONObject(i).getString("title"), arr.getJSONObject(i).getString("poster_path"), arr.getJSONObject(i).getString("overview"), arr.getJSONObject(i).getString("release_date"), arr.getJSONObject(i).getInt("id")));
-			}
-		} catch (Exception e) {
-			
-			e.printStackTrace();
-		}
-		session.setAttribute("movie", movie);
-		return "/done";
+    public String update(@PathVariable String id, @RequestParam("rating") String rating, HttpServletRequest request) throws IOException {
+		
+		System.out.println("Rating: " + rating);
+		return "/pick";
 	}
 	
 private String getMovie(String id) throws Exception {

@@ -26,6 +26,10 @@
 	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 	<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 	
+	<link rel="stylesheet" href="jquery.rating.css">
+    <script src="jquery.js"></script>
+    <script src="jquery.rating.js"></script>
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald">
@@ -57,13 +61,37 @@
 	</nav>
 	
 	<h1>${pick.title}</h1>
-	<img height="300" width="250" src="https://image.tmdb.org/t/p/w500/${pick.posterPath}"/>
-	<h2>Description: ${pick.description}</h2>
-	<h2>Release Date: ${pick.date}</h2>
+	
+	<table class="table table-striped">
+		<tr>
+			<td></td>
+			<td><img height="300" width="250" src="https://image.tmdb.org/t/p/w500/${pick.posterPath}"/> </td>
+		</tr>
+		<tr>
+			<td><h2>Description: </h2></td>
+			<td><h3>${pick.description}</h3></td>
+		</tr>
+		<tr>
+			<td><h2>Release Date: </h2></td>
+			<td><h3>${pick.date}</h3></td>
+		</tr>
+		<tr>
+			<td><h2>Movie Rating: </h2></td>
+			<td><h3>${pick.rating}</h3></td>
+		</tr>
+		<tr>
+			<td><h2>Comments: </h2></td>
+			<td><h3>**Coming Soon**</h3></td>
+		</tr>
+	</table>
 	
 	<form action="/pick-${pick.id}" method="POST">
 		
-	   	<p><input class="w3-input w3-border" type="text" name="title" placeholder="Enter movie" ></p>
+	   	<input type="radio" name="rating" value="1" class="star">
+        <input type="radio" name="rating" value="2" class="star">
+        <input type="radio" name="rating" value="3" class="star">
+        <input type="radio" name="rating" value="4" class="star">
+        <input type="radio" name="rating" value="5" class="star">
 	   
 	   		<!-- <input type="submit" value="Submit" /> -->
 	    <p><button type="submit" value="Submit" class="w3-button w3-block w3-cyan">Find Movie!</button></p>
