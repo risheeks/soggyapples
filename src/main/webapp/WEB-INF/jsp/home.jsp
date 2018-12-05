@@ -43,7 +43,7 @@ and is wrapped around the whole page content, except for the footer in this exam
   </header>
   
   
-  <div class="w3-container w3-white" id="limit">
+  <div class="w3-container w3-white w3-center" id="limit">
   	<div class="w3-container w3-padding w3-black">
           <h5>Enter the name of a movie below</h5>
   	</div>

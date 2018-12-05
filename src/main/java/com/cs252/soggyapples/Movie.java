@@ -6,18 +6,19 @@ public class Movie {
 	String title;
 	String posterPath;
 	String description;
-	Date date;
-	int votes;
+	String date;
+	String id;
 	
-	public Movie(String title) {
-		this.title = title;
+	public Movie() {
+		
 	}
 	
-	public Movie(String title, String poster, String desc, String date) {
+	public Movie(String title, String poster, String desc, String date, int id) {
 		this.title = title;
 		this.posterPath = poster;
 		this.description = desc;
-		this.date = Date.parseDate(date);
+		this.date = date;
+		this.id = (new Integer(id)).toString();		
 	}
 	
 	public String getTitle() {
@@ -38,13 +39,17 @@ public class Movie {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
-	
-	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}	
 	
 }
