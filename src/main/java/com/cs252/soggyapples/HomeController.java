@@ -290,6 +290,7 @@ private String getMovie(String id) throws Exception {
     	                // read query is cancelled.
     	            }
     	});
+    	Collections.reverse(comments); 
 		return comments;
     	
     }
