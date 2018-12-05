@@ -131,7 +131,8 @@ public class HomeController {
 			String key = mDatabase.push().getKey();   
 			movieData.put("id", key);
 			movieData.put("comments", "");
-			movieData.put("ratings", "");
+			movieData.put("ratings", "0");
+			movieData.put("title", movie.getTitle());
 			usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
 				  public void onDataChange(DataSnapshot snapshot) {
 				    if (snapshot.hasChild(id)) {
