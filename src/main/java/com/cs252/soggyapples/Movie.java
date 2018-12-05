@@ -8,6 +8,8 @@ public class Movie {
 	String description;
 	String date;
 	String id;
+	String rating;
+	
 	
 	public Movie() {
 		
@@ -19,6 +21,7 @@ public class Movie {
 		this.description = desc;
 		this.date = date;
 		this.id = (new Integer(id)).toString();		
+		this.rating = "0";                                 //remove once fixed
 	}
 	
 	public String getTitle() {
@@ -50,6 +53,14 @@ public class Movie {
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getRating() {
+		return rating;
+	}
+
+	public void setRating(String rating) {
+		this.rating = rating;
 	}	
 	
 }
