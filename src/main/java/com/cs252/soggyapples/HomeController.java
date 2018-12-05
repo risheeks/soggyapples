@@ -7,6 +7,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -45,7 +48,7 @@ public class HomeController {
     @Value("${home.message}")
     private String message;
 
-	private String baseURL = "https://image.tmdb.org/t/p/w500/aLHjjXmX7VKo3W3HkSGnqe3d7pA.jpg";
+	private String baseURL = "https://image.tmdb.org/t/p/w500/";
 	private String searchURL = "https://api.themoviedb.org/3/search/movie?api_key=5b85ae54ca7b9e80f18626c3b0fd285b&query=";
 	private String movieURL = "https://api.themoviedb.org/3/movie/";
 	private String api_key = "?api_key=5b85ae54ca7b9e80f18626c3b0fd285b";
@@ -128,17 +131,27 @@ public class HomeController {
 			
 			DatabaseReference usersRef = mDatabase.child("Movies");
 			Map<String, String> movieData = new HashMap<String, String>();
+			Map<String, String> commentData = new HashMap<String, String>();
+			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			long time = timestamp.getTime();
 			String key = mDatabase.push().getKey();   
 			movieData.put("id", key);
-			movieData.put("comments", "");
+			movieData.put("num_ratings", "0");
 			movieData.put("ratings", "0");
 			movieData.put("title", movie.getTitle());
+			commentData.put("comment", "default");
+			commentData.put("timestamp", String.valueOf(time));
+			
 			usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
 				  public void onDataChange(DataSnapshot snapshot) {
 				    if (snapshot.hasChild(id)) {
+				    	String comment_key = mDatabase.push().getKey();
 				    	System.out.println("Movie exists!");
+				    	usersRef.child(id).child("comments").child(comment_key).setValueAsync(commentData);
 				    }else {
+				    	String comment_key = mDatabase.push().getKey();  
 				    	usersRef.child(id).setValueAsync(movieData);
+				    	usersRef.child(id).child("comments").child(comment_key).setValueAsync(commentData);
 				    }
 				  }
 	
