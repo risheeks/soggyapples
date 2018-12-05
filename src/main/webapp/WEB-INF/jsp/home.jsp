@@ -70,7 +70,7 @@ and is wrapped around the whole page content, except for the footer in this exam
   
 
   	<c:forEach items="${movies}" var="movie">
-		<a href="/pick-${movie.title}" ><img class="mySlides" height="300" width="250" src="https://image.tmdb.org/t/p/w500/${movie.posterPath}"></a>			
+		<a href="/pick-${movie.id}" ><img class="mySlides" height="300" width="250" src="https://image.tmdb.org/t/p/w500/${movie.posterPath}"></a>			
 	</c:forEach>
   
 

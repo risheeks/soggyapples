@@ -64,7 +64,7 @@ public class HomeController {
             {
                 if(i == 10) break;
                 System.out.println(arr.getJSONObject(i).getString("poster_path"));
-                movies.add(new Movie(arr.getJSONObject(i).getString("title"), arr.getJSONObject(i).getString("poster_path"), arr.getJSONObject(i).getString("overview"), arr.getJSONObject(i).getString("release_date")));
+                movies.add(new Movie(arr.getJSONObject(i).getString("title"), arr.getJSONObject(i).getString("poster_path"), arr.getJSONObject(i).getString("overview"), arr.getJSONObject(i).getString("release_date"), arr.getJSONObject(i).getInt("id")));
             }
         } catch (Exception e) {
             
@@ -84,7 +84,7 @@ public class HomeController {
 		
 		List<Movie> movies = new ArrayList<Movie>();
 		try {
-			String res = sendGet(title);
+			String res = sendGet(title, searchURL);
 			JSONObject obj = new JSONObject(res);
 
 			JSONArray arr = obj.getJSONArray("results");
@@ -161,7 +161,7 @@ public class HomeController {
 		//session.setAttribute("movie", id);
 		Movie movie = new Movie();
 		try {
-			String res = sendGet(id);
+			String res = sendGet(id, searchURL);
 			JSONObject obj = new JSONObject(res);
 
 			JSONArray arr = obj.getJSONArray("results");
