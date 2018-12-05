@@ -60,15 +60,11 @@ public class HomeController {
 		try {
 			String res = sendGet(title);
 			JSONObject obj = new JSONObject(res);
-			
 
 			JSONArray arr = obj.getJSONArray("results");
 			for (int i = 0; i < arr.length(); i++)
 			{
 				movies.add(new Movie(arr.getJSONObject(i).getString("title"), arr.getJSONObject(i).getString("poster_path"), arr.getJSONObject(i).getString("overview"), arr.getJSONObject(i).getString("release_date")));
-//			    String post_id = arr.getJSONObject(i).getString("poster_path");
-//			    post_id = baseURL + post_id.substring(1);
-			   
 			}
 		} catch (Exception e) {
 			
@@ -117,6 +113,13 @@ public class HomeController {
         e.printStackTrace();
     }
 		return "/pick";
+	}
+	
+	@RequestMapping(value = { "/pick-{title}" }, method = RequestMethod.POST)
+    public String update(@PathVariable String title, HttpServletRequest request) throws IOException {
+		HttpSession session = request.getSession();
+		session.setAttribute("movie", title);
+		return "/done";
 	}
 	
 	private String sendGet(String title) throws Exception {
