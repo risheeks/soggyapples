@@ -34,10 +34,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 @Controller
@@ -78,6 +80,16 @@ public class HomeController {
         session.setAttribute("movies", movies);
         //session.setAttribute("title", title);
         
+        List<Comment> comments = getAllComments("335983");
+        try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+        System.out.println("get size: " + comments.size());
+        for(int i =0 ; i < comments.size(); i++) {
+        	System.out.println(comments.get(i).getComment());
+        }
 
         model.put("message", this.message);
         return "/home";
@@ -254,4 +266,39 @@ private String getMovie(String id) throws Exception {
         //System.out.println(response.toString());
 
     }
+    
+    private List<Comment> getAllComments(String movie_id) {
+    	List<Comment> comments = new ArrayList<Comment>();
+    	Query q = FirebaseDatabase.getInstance().getReference().child("Movies").child(movie_id).child("comments");
+    	q.addValueEventListener(
+    	        new ValueEventListener() {
+    	            @Override
+    	            public void onDataChange(DataSnapshot dataSnapshot) {
+    	            	if (dataSnapshot.exists()) {
+    	            		
+    	            		for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+    	            			//System.out.println("Enters");
+    	            			Comment comment = userSnapshot.getValue(Comment.class);
+    	            			//System.out.println(comment.getTimestamp());
+    	            			comments.add(comment);
+    	            		}
+    	            	}
+    	            }
+
+    	            @Override
+    	            public void onCancelled(DatabaseError databaseError) {
+    	                // read query is cancelled.
+    	            }
+    	});
+		return comments;
+    	
+    }
+    
 }
+
+
+
+
+
+
+
