@@ -39,120 +39,142 @@ import com.google.firebase.database.ValueEventListener;
 
 @Controller
 public class HomeController {
-	
-	private DatabaseReference mDatabase;
-	
-	@Value("${home.message}")
+    
+    private DatabaseReference mDatabase;
+    
+    @Value("${home.message}")
     private String message;
-	private String baseURL = "https://image.tmdb.org/t/p/w500/aLHjjXmX7VKo3W3HkSGnqe3d7pA.jpg";
-	private String searchURL = "https://api.themoviedb.org/3/search/movie?api_key=5b85ae54ca7b9e80f18626c3b0fd285b&query=";
-	
-	@RequestMapping(value = { "/" }, method = RequestMethod.GET)
-    public String welcome(Map<String, Object> model) throws IOException {
-		
+    private String baseURL = "https://image.tmdb.org/t/p/w500/aLHjjXmX7VKo3W3HkSGnqe3d7pA.jpg";
+    private String searchURL = "https://api.themoviedb.org/3/search/movie?api_key=5b85ae54ca7b9e80f18626c3b0fd285b&query=";
+    private String recentURL = "https://api.themoviedb.org/3/movie/now_playing?api_key=5b85ae54ca7b9e80f18626c3b0fd285b";
+    
+    @RequestMapping(value = { "/" }, method = RequestMethod.GET)
+    public String welcome(Map<String, Object> model, HttpServletRequest request) throws IOException {
+        
+        List<Movie> movies = new ArrayList<Movie>();
+        try {
+            String res = sendGet("", recentURL);
+            JSONObject obj = new JSONObject(res);
+
+            JSONArray arr = obj.getJSONArray("results");
+            for (int i = 0; i < arr.length(); i++)
+            {
+                if(i == 10) break;
+                System.out.println(arr.getJSONObject(i).getString("poster_path"));
+                movies.add(new Movie(arr.getJSONObject(i).getString("title"), arr.getJSONObject(i).getString("poster_path"), arr.getJSONObject(i).getString("overview"), arr.getJSONObject(i).getString("release_date")));
+            }
+        } catch (Exception e) {
+            
+            e.printStackTrace();
+        }
+
+        HttpSession session = request.getSession();
+        session.setAttribute("movies", movies);
+        //session.setAttribute("title", title);
+        
         model.put("message", this.message);
         return "/home";
     }
-	@RequestMapping(value = { "/api" }, method = RequestMethod.POST)
+    @RequestMapping(value = { "/api" }, method = RequestMethod.POST)
     public String api(@RequestParam("title") String title, HttpServletRequest request) throws IOException {
-		
-		List<Movie> movies = new ArrayList<Movie>();
-		try {
-			String res = sendGet(title);
-			JSONObject obj = new JSONObject(res);
+        
+        List<Movie> movies = new ArrayList<Movie>();
+        try {
+            String res = sendGet(title, searchURL);
+            JSONObject obj = new JSONObject(res);
 
-			JSONArray arr = obj.getJSONArray("results");
-			for (int i = 0; i < arr.length(); i++)
-			{
-				movies.add(new Movie(arr.getJSONObject(i).getString("title"), arr.getJSONObject(i).getString("poster_path"), arr.getJSONObject(i).getString("overview"), arr.getJSONObject(i).getString("release_date")));
-			}
-		} catch (Exception e) {
-			
-			e.printStackTrace();
-		}
+            JSONArray arr = obj.getJSONArray("results");
+            for (int i = 0; i < arr.length(); i++)
+            {
+                movies.add(new Movie(arr.getJSONObject(i).getString("title"), arr.getJSONObject(i).getString("poster_path"), arr.getJSONObject(i).getString("overview"), arr.getJSONObject(i).getString("release_date")));
+            }
+        } catch (Exception e) {
+            
+            e.printStackTrace();
+        }
 
-		HttpSession session = request.getSession();
-		session.setAttribute("movies", movies);
-		session.setAttribute("title", title);
+        HttpSession session = request.getSession();
+        session.setAttribute("movies", movies);
+        session.setAttribute("title", title);
         return "/movie";
     }
-	
-	@RequestMapping(value = { "/pick-{title}" }, method = RequestMethod.GET)
+    
+    @RequestMapping(value = { "/pick-{title}" }, method = RequestMethod.GET)
     public String pick(@PathVariable String title, HttpServletRequest request) throws IOException {
-		HttpSession session = request.getSession();
-		session.setAttribute("movie", title);
-	try {
-		
-		
-		mDatabase = FirebaseDatabase.getInstance().getReference();
-		
-		DatabaseReference usersRef = mDatabase.child("Movies");
-		Map<String, String> movieData = new HashMap<String, String>();
-		String key = mDatabase.push().getKey();   
-		movieData.put("id", key);
-		movieData.put("comments", "");
-		movieData.put("ratings", "");
-		usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-			  public void onDataChange(DataSnapshot snapshot) {
-			    if (snapshot.hasChild(title)) {
-			    	System.out.println("Movie exists!");
-			    }else {
-			    	usersRef.child(title).setValueAsync(movieData);
-			    }
-			  }
+        HttpSession session = request.getSession();
+        session.setAttribute("movie", title);
+    try {
+        
+        
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        
+        DatabaseReference usersRef = mDatabase.child("Movies");
+        Map<String, String> movieData = new HashMap<String, String>();
+        String key = mDatabase.push().getKey();  
+        movieData.put("id", key);
+        movieData.put("comments", "");
+        movieData.put("ratings", "");
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+              public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.hasChild(title)) {
+                    System.out.println("Movie exists!");
+                }else {
+                    usersRef.child(title).setValueAsync(movieData);
+                }
+              }
 
-			@Override
-			public void onCancelled(DatabaseError error) {
-				System.out.println(error);
-				
-			}
-			});
-		
+            @Override
+            public void onCancelled(DatabaseError error) {
+                System.out.println(error);
+                
+            }
+            });
+        
         
     } catch (Exception e) {
         e.printStackTrace();
     }
-		return "/pick";
-	}
-	
-	@RequestMapping(value = { "/pick-{title}" }, method = RequestMethod.POST)
+        return "/pick";
+    }
+    
+    @RequestMapping(value = { "/pick-{title}" }, method = RequestMethod.POST)
     public String update(@PathVariable String title, HttpServletRequest request) throws IOException {
-		HttpSession session = request.getSession();
-		session.setAttribute("movie", title);
-		return "/done";
-	}
-	
-	private String sendGet(String title) throws Exception {
-		
-		
-		String url = searchURL + URLEncoder.encode(title, "UTF-8")+"&sort_by=popularity";
-		
-		URL obj = new URL(url);
-		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        HttpSession session = request.getSession();
+        session.setAttribute("movie", title);
+        return "/done";
+    }
+    
+    private String sendGet(String title, String movie_url) throws Exception {
+        
+        
+        String url = movie_url + URLEncoder.encode(title, "UTF-8")+"&sort_by=popularity";
+        
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
-		// optional default is GET
-		con.setRequestMethod("GET");
+        // optional default is GET
+        con.setRequestMethod("GET");
 
-		//add request header
-		//con.setRequestProperty("User-Agent", USER_AGENT);
+        //add request header
+        //con.setRequestProperty("User-Agent", USER_AGENT);
 
-		int responseCode = con.getResponseCode();
-		System.out.println("\nSending 'GET' request to URL : " + url);
-		System.out.println("Response Code : " + responseCode);
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'GET' request to URL : " + url);
+        System.out.println("Response Code : " + responseCode);
 
-		BufferedReader in = new BufferedReader(
-		        new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
 
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
-		}
-		in.close();
-		return response.toString();
-		//System.out.println(response.toString());
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        return response.toString();
+        //System.out.println(response.toString());
 
-	}
-	    
+    }
+        
 
 }
