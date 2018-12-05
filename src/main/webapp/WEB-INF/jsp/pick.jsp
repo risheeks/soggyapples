@@ -55,10 +55,14 @@
 			</div>
 		</div>
 	</nav>
-
-	<h1>You have arrived after picking ${movie}</h1>
-
-	<form action="/pick-${movie}" method="POST">
+	
+	<h1>${pick.title}</h1>
+	<img height="300" width="250" src="https://image.tmdb.org/t/p/w500/${pick.posterPath}"/>
+	<h2>Description: ${pick.description}</h2>
+	<h2>Release Date: ${pick.date}</h2>
+	
+	<form action="/pick-${pick.id}" method="POST">
+		
 	   	<p><input class="w3-input w3-border" type="text" name="title" placeholder="Enter movie" ></p>
 	   
 	   		<!-- <input type="submit" value="Submit" /> -->

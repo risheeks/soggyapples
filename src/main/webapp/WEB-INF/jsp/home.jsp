@@ -54,10 +54,8 @@ and is wrapped around the whole page content, except for the footer in this exam
     <h6>Welcome to the website where you can <span class="w3-tag">rate and comment on movies!</span></h6>
   </header>
   
-
-  
-
   <div class="w3-container w3-white w3-center w3-light-grey">
+
   	<div class="w3-container w3-padding w3-black">
           <h5>Enter the name of a movie below</h5>
   	</div>
