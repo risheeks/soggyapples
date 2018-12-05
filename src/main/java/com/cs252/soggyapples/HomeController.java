@@ -10,6 +10,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +31,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 @Controller
 public class HomeController {
@@ -40,10 +44,13 @@ public class HomeController {
 	
 	@Value("${home.message}")
     private String message;
-	private String baseURL = "https://image.tmdb.org/t/p/w500/";
+	private String baseURL = "https://image.tmdb.org/t/p/w500/aLHjjXmX7VKo3W3HkSGnqe3d7pA.jpg";
+	private String searchURL = "https://api.themoviedb.org/3/search/movie?api_key=5b85ae54ca7b9e80f18626c3b0fd285b&query=";
 	
 	@RequestMapping(value = { "/" }, method = RequestMethod.GET)
     public String welcome(Map<String, Object> model) throws IOException {
+		
+        model.put("message", this.message);
         return "/home";
     }
 	@RequestMapping(value = { "/api" }, method = RequestMethod.POST)
@@ -74,6 +81,37 @@ public class HomeController {
     public String pick(@PathVariable String title, HttpServletRequest request) throws IOException {
 		HttpSession session = request.getSession();
 		session.setAttribute("movie", title);
+	try {
+		
+		
+		mDatabase = FirebaseDatabase.getInstance().getReference();
+		
+		DatabaseReference usersRef = mDatabase.child("Movies");
+		Map<String, String> movieData = new HashMap<String, String>();
+		String key = mDatabase.push().getKey();   
+		movieData.put("id", key);
+		movieData.put("comments", "");
+		movieData.put("ratings", "");
+		usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+			  public void onDataChange(DataSnapshot snapshot) {
+			    if (snapshot.hasChild(title)) {
+			    	System.out.println("Movie exists!");
+			    }else {
+			    	usersRef.child(title).setValueAsync(movieData);
+			    }
+			  }
+
+			@Override
+			public void onCancelled(DatabaseError error) {
+				System.out.println(error);
+				
+			}
+			});
+		
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
 		return "/pick";
 	}
 	
@@ -87,7 +125,7 @@ public class HomeController {
 	private String sendGet(String title) throws Exception {
 		
 		
-		String url = "https://api.themoviedb.org/3/search/movie?api_key=5b85ae54ca7b9e80f18626c3b0fd285b&query="+ URLEncoder.encode(title, "UTF-8")+"&sort_by=popularity";
+		String url = searchURL + URLEncoder.encode(title, "UTF-8")+"&sort_by=popularity";
 		
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
