@@ -10,6 +10,7 @@
 <link href="../webjars/font-awesome/4.6.1/css/font-awesome.css"
 	rel="stylesheet">
 	
+
 <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -32,29 +33,34 @@ body {font-family: "Open Sans"}
   <a href="http://www.imdb.com" class="w3-bar-item w3-button"><i>IMDB</i></a>
 </div>
   
+
 <!-- w3-content defines a container for fixed size centered content, 
 and is wrapped around the whole page content, except for the footer in this example -->
 <div class="w3-content" style="max-width:1600px">
 
   <!-- Header -->
-  <header class="w3-container w3-center w3-padding-48 w3-white">
+  <header class="w3-container w3-center w3-padding-48 w3-light-grey">
     <h1 class="w3-xxxlarge"><b>SOGGY APPLES</b></h1>
     <h6>Welcome to the website where you can <span class="w3-tag">rate and comment on movies!</span></h6>
   </header>
   
+
   
-  <div class="w3-container w3-white" id="limit">
+
+  <div class="w3-container w3-white w3-center w3-light-grey">
   	<div class="w3-container w3-padding w3-black">
           <h5>Enter the name of a movie below</h5>
   	</div>
   	<form action="/api" method="POST">
 	   	<p><input class="w3-input w3-border" type="text" name="title" placeholder="Enter movie" ></p>
 	   
+
 	   		<!-- <input type="submit" value="Submit" /> -->
 	    <p><button type="submit" value="Submit" class="w3-button w3-block w3-cyan">Find Movie!</button></p>
   	</form> 
   </div>
   
+
   <div class="w3-row" id="myGrid" style="margin-bottom:128px">
 	  <div class="w3-third">
 	    <a href="www.google.com"> </a><img src="https://www.w3schools.com//w3images/rocks.jpg" style="width:100%"> </a>
@@ -65,6 +71,7 @@ and is wrapped around the whole page content, except for the footer in this exam
 	    <img src="https://www.w3schools.com//w3images/mist.jpg" style="width:100%">
 	  </div>
 	
+
 	  <div class="w3-third">
 	    <img src="https://www.w3schools.com//w3images/coffee.jpg" style="width:100%">
 	    <img src="https://www.w3schools.com//w3images/bridge.jpg" style="width:100%">
@@ -74,6 +81,7 @@ and is wrapped around the whole page content, except for the footer in this exam
 	    <img src="https://www.w3schools.com//w3images/avatar_g.jpg" style="width:100%">
 	  </div>
 	
+
 	  <div class="w3-third">
 	    <img src="https://www.w3schools.com//w3images/mist.jpg" style="width:100%">
 	    <img src="https://www.w3schools.com//w3images/workbench.jpg" style="width:100%">
