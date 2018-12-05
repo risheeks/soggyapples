@@ -63,4 +63,8 @@
 
 </body>
 
+<footer class="w3-container w3-dark-grey" style="padding:32px">
+  <p>Built by <a href="https://github.com/risheeks" target="_blank">Risheek</a>, <a href="https://github.com/sidBOT" target="_blank">Siddhant</a> and <a href="https://github.com/mehta105" target="_blank">Ayush</a></p>
+</footer>
+
 </html>

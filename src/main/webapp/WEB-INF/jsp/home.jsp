@@ -48,11 +48,11 @@ and is wrapped around the whole page content, except for the footer in this exam
           <h5>Enter the name of a movie below</h5>
   	</div>
   	<form action="/api" method="POST">
-   	<p><input class="w3-input w3-border" type="text" name="title" placeholder="Enter movie" ></p>
-   
-   		<!-- <input type="submit" value="Submit" /> -->
-    <p><button type="submit" value="Submit" class="w3-button w3-block w3-cyan">Find Movie!</button></p>
-  	 </form> 
+	   	<p><input class="w3-input w3-border" type="text" name="title" placeholder="Enter movie" ></p>
+	   
+	   		<!-- <input type="submit" value="Submit" /> -->
+	    <p><button type="submit" value="Submit" class="w3-button w3-block w3-cyan">Find Movie!</button></p>
+  	</form> 
   </div>
   
   <div class="w3-row" id="myGrid" style="margin-bottom:128px">
