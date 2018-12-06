@@ -1,24 +1,19 @@
 package com.cs252.soggyapples;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -32,10 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.auth.FirebaseAuth;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -80,9 +72,7 @@ public class HomeController {
         HttpSession session = request.getSession();
         session.setAttribute("movies", movies);
         //session.setAttribute("title", title);
-        setMovieRating("335983", "5");
-        List<Comment> comments = getAllComments("335983");
-        
+        //setMovieRating("335983", "5");
         
         try {
 			Thread.sleep(1000);
@@ -90,14 +80,7 @@ public class HomeController {
 			e.printStackTrace();
 		}
         
-        
-        
-        System.out.println("get size: " + comments.size());
-        for(int i =0 ; i < comments.size(); i++) {
-        	System.out.println(comments.get(i).getComment());
-        }
-
-        model.put("message", this.message);
+      
         return "/home";
   }
   @RequestMapping(value = { "/api" }, method = RequestMethod.POST)
@@ -159,11 +142,11 @@ public class HomeController {
 			usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
 				  public void onDataChange(DataSnapshot snapshot) {
 				    if (snapshot.hasChild(id)) {
-				    	String comment_key = mDatabase.push().getKey();
+				    	//String comment_key = mDatabase.push().getKey();
 				    	System.out.println("Movie exists!");
 				    	//usersRef.child(id).child("comments").child(comment_key).setValueAsync(commentData);
 				    }else {
-				    	String comment_key = mDatabase.push().getKey();  
+				    	//String comment_key = mDatabase.push().getKey();  
 				    	usersRef.child(id).setValueAsync(movieData);
 				    	//usersRef.child(id).child("comments").child(comment_key).setValueAsync(commentData);
 				    }
@@ -180,8 +163,28 @@ public class HomeController {
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
-		movie.comments = getAllComments(id);
-		movie.setRating("0");
+		
+//		movie.comments = getAllComments(id);
+//		try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		for(Comment c:movie.comments) {
+//    		Calendar calendar = Calendar.getInstance();
+//    		calendar.setTimeInMillis(Long.parseLong(c.getTimestamp()));
+//
+//    		int mYear = calendar.get(Calendar.YEAR);
+//    		int mMonth = calendar.get(Calendar.MONTH);
+//    		int mDay = calendar.get(Calendar.DAY_OF_MONTH);
+//    		int mHour = calendar.get(Calendar.HOUR);
+//    		int mMinute = calendar.get(Calendar.MINUTE);
+//    		c.setTimestamp("Time:"+mHour+ ":" +mMinute + "   Date " + mDay + "-" + mMonth + "-" + mYear);
+//    		System.out.println(c.getTimestamp());
+//    	}
+		
+		
+		movie.setRating(getMovieRating(id));
 		session.setAttribute("comments", movie.getComments());
 		session.setAttribute("pick", movie);
 		return "/pick";
@@ -189,9 +192,10 @@ public class HomeController {
 	
 	@RequestMapping(value = { "/pick-{id}" }, method = RequestMethod.POST)
     public String update(@PathVariable String id, @RequestParam("rating") String rating, @RequestParam("comment") String comment, HttpServletRequest request) throws IOException {
+		HttpSession session = request.getSession();
 		Movie movie = new Movie();
 		try {
-			String res = getMovie(id);
+			String res = sendGet(id, movieURL, api_key);
 			JSONObject obj = new JSONObject(res);
 			movie = (new Movie(obj.getString("title"), obj.getString("poster_path"), obj.getString("overview"), obj.getString("release_date"), obj.getInt("id")));
 		} catch (Exception e) {
@@ -212,7 +216,14 @@ public class HomeController {
 			movieData.put("ratings", movie.getRating());
 			movieData.put("title", movie.getTitle());
 			commentData.put("comment", comment);
-			commentData.put("timestamp", String.valueOf(time));
+			Calendar calendar = Calendar.getInstance();
+    		calendar.setTimeInMillis(time);
+    		int mYear = calendar.get(Calendar.YEAR);
+    		int mMonth = calendar.get(Calendar.MONTH);
+    		int mDay = calendar.get(Calendar.DAY_OF_MONTH);
+    		int mHour = calendar.get(Calendar.HOUR);
+    		int mMinute = calendar.get(Calendar.MINUTE);
+			commentData.put("timestamp", "Time:"+mHour+ ":" +mMinute + "   Date " + mDay + "-" + mMonth + "-" + mYear);
 			
 			usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
 				  public void onDataChange(DataSnapshot snapshot) {
@@ -221,9 +232,7 @@ public class HomeController {
 				    	System.out.println("Movie exists!");
 				    	usersRef.child(id).child("comments").child(comment_key).setValueAsync(commentData);
 				    }else {
-				    	String comment_key = mDatabase.push().getKey();  
-				    	usersRef.child(id).setValueAsync(movieData);
-				    	usersRef.child(id).child("comments").child(comment_key).setValueAsync(commentData);
+				    	System.out.println("Invalid movie id: update()");
 				    }
 				  }
 	
@@ -239,48 +248,19 @@ public class HomeController {
 	        e.printStackTrace();
 	    }
 		
-		
-		System.out.println("Rating: " + rating);
-		System.out.println("Comment: " + comment);
+		setMovieRating(id, rating);
+		movie.comments = getAllComments(id);
+		movie.setRating(getMovieRating(id));
+		session.setAttribute("comments", movie.getComments());
+		session.setAttribute("pick", movie);
 		return "/pick";
 	}
-	
-//private String getMovie(String id) throws Exception {
-//		
-//		String url = movieURL + URLEncoder.encode(id, "UTF-8") + api_key;
-//		
-//		URL obj = new URL(url);
-//		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-//
-//		// optional default is GET
-//		con.setRequestMethod("GET");
-//
-//		//add request header
-//		//con.setRequestProperty("User-Agent", USER_AGENT);
-//
-//		int responseCode = con.getResponseCode();
-//		System.out.println("\nSending 'GET' request to URL : " + url);
-//		System.out.println("Response Code : " + responseCode);
-//
-//		BufferedReader in = new BufferedReader(
-//		        new InputStreamReader(con.getInputStream()));
-//		String inputLine;
-//		StringBuffer response = new StringBuffer();
-//
-//		while ((inputLine = in.readLine()) != null) {
-//			response.append(inputLine);
-//		}
-//		in.close();
-//		return response.toString();
-//		//System.out.println(response.toString());
-//
-//	}
-	    
+
     
-    private String sendGet(String title, String movie_url, String suffix) throws Exception {
+    private String sendGet(String id, String movie_url, String suffix) throws Exception {
         
         
-        String url = movie_url + URLEncoder.encode(title, "UTF-8")+suffix;
+        String url = movie_url + URLEncoder.encode(id, "UTF-8")+suffix;
         
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -332,6 +312,7 @@ public class HomeController {
     	            	System.out.println("getAllComments error");
     	            }
     	});
+    	
     	Collections.reverse(comments); 
 		return comments;
     	
@@ -393,8 +374,7 @@ public class HomeController {
     	num = movie.getNumRating();
     	double curRat = Double.parseDouble(num);
     	double newRat = ((curRat * Double.parseDouble(getRat)) + Double.parseDouble(value))/(curRat+1.0);
-    	DecimalFormat df = new DecimalFormat("#.#");
-    	df.format(newRat);
+    	newRat =  Math.round(newRat * 10) / 10.0;
     	Map<String, Object> rating_map = new HashMap< String,Object>();
     	Map<String, Object> numRating_map = new HashMap< String,Object>();
     	
