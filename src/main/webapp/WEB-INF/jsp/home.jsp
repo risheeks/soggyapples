@@ -81,7 +81,7 @@ and is wrapped around the whole page content, except for the footer in this exam
 	<h1 class="w3-center w3-large"><b>Current Movies in Theater!!!!</b></h1>
   	<c:forEach items="${movies}" var="movie">
 
-		<a class="mySlides" href="/pick-${movie.title}"><img  height="300" width="250" src="https://image.tmdb.org/t/p/w500/${movie.posterPath}"> <h2 class="w3-center">${movie.title}</h2></a>
+		<a class="mySlides" href="/pick-${movie.id}"><img  height="300" width="250" src="https://image.tmdb.org/t/p/w500/${movie.posterPath}"> <h2 class="w3-center">${movie.title}</h2></a>
 	</c:forEach>
   
 
