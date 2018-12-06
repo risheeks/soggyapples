@@ -15,6 +15,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -55,7 +57,11 @@ public class HomeController {
   @RequestMapping(value = { "/" }, method = RequestMethod.GET)
   public String welcome(Map<String, Object> model, HttpServletRequest request) throws IOException {
 	  
-	  	createUser("si22hant@gmail.com".getBytes(), "123456".getBytes(), "siddhant97");
+	  	//createUser("si22hant@gmail.com".getBytes(), "123456".getBytes(), "siddhant97");
+	  	
+	  	User user = signin("si22hant@gmail.com".getBytes(), "123456".getBytes());
+		System.out.println("user Email: " + user.getEmail() + " username: " + user.getUsername());
+
         List<Movie> movies = new ArrayList<Movie>();
         try {
             String res = sendGet("", recentURL, "&sort_by=popularity");
@@ -65,7 +71,7 @@ public class HomeController {
             for (int i = 0; i < arr.length(); i++)
             {
                 if(i == 10) break;
-                System.out.println(arr.getJSONObject(i).getString("poster_path"));
+//                System.out.println(arr.getJSONObject(i).getString("poster_path"));
                 movies.add(new Movie(arr.getJSONObject(i).getString("title"), arr.getJSONObject(i).getString("poster_path"), arr.getJSONObject(i).getString("overview"), arr.getJSONObject(i).getString("release_date"), arr.getJSONObject(i).getInt("id")));
             }
         } catch (Exception e) {
@@ -174,6 +180,7 @@ public class HomeController {
     public String update(@PathVariable String id, @RequestParam("rating") String rating, @RequestParam("comment") String comment, HttpServletRequest request) throws IOException {
 		HttpSession session = request.getSession();
 		Movie movie = new Movie();
+		CountDownLatch latch = new CountDownLatch(1);
 		try {
 			String res = sendGet(id, movieURL, api_key);
 			JSONObject obj = new JSONObject(res);
@@ -211,8 +218,10 @@ public class HomeController {
 				    	String comment_key = mDatabase.push().getKey();
 				    	System.out.println("Movie exists!");
 				    	usersRef.child(id).child("comments").child(comment_key).setValueAsync(commentData);
+				    	latch.countDown();
 				    }else {
 				    	System.out.println("Invalid movie id: update()");
+				    	latch.countDown();
 				    }
 				  }
 	
@@ -227,7 +236,12 @@ public class HomeController {
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
-		
+		try {
+			latch.await();
+		} catch (InterruptedException e) {
+			
+			e.printStackTrace();
+		}
 		setMovieRating(id, rating);
 		movie.comments = getAllComments(id);
 		movie.setRating(getMovieRating(id));
@@ -297,12 +311,6 @@ public class HomeController {
     	            	System.out.println("getAllComments error");
     	            }
     	});
-//    	try {
-//			Thread.sleep(1000);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-    	//Collections.reverse(comments); 
     	List<Comment> comments_rev = new ArrayList<Comment>();
     	comments_rev = Lists.reverse(comments);
 		return comments_rev;
@@ -311,6 +319,7 @@ public class HomeController {
     
     
     private String getMovieRating(String movie_id) {
+    	CountDownLatch latch = new CountDownLatch(1);
     	Movie movie = new Movie();
     	Query q = FirebaseDatabase.getInstance().getReference().child("Movies").child(movie_id).child("ratings");
     	q.addValueEventListener(
@@ -319,26 +328,27 @@ public class HomeController {
     	            public void onDataChange(DataSnapshot dataSnapshot) {
     	            	if (dataSnapshot.exists()) {
     	            		movie.setRating(dataSnapshot.getValue((String.class)));
-    	            		//System.out.println("get rating fb: " + movie.getRating());
-    	            		return;
+    	            		latch.countDown();
     	            	}
     	            }
 
     	            @Override
     	            public void onCancelled(DatabaseError databaseError) {
-    	                System.out.println("getMovieRating error");
+    	                System.out.println(databaseError);
+    	                latch.countDown();
     	            }
     	});
+
     	try {
-			Thread.sleep(750);
+			latch.await();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-    	//System.out.println("get rating fb: " + movie.getRating());
     	return movie.getRating();
     }
     
     private void setMovieRating(String movie_id, String value) {
+    	CountDownLatch latch = new CountDownLatch(1);
     	Movie movie = new Movie();
     	String num="";
     	Query q = FirebaseDatabase.getInstance().getReference().child("Movies").child(movie_id).child("num_ratings");
@@ -349,20 +359,22 @@ public class HomeController {
     	            	if (dataSnapshot.exists()) {
     	            		movie.setRating(dataSnapshot.getValue((String.class)));
     	            		System.out.println("get rating fb: " + movie.getRating());
-    	            		return;
+    	            		latch.countDown();
     	            	}
     	            }
 
     	            @Override
     	            public void onCancelled(DatabaseError databaseError) {
     	                System.out.println("getMovieRating error");
+    	                latch.countDown();
     	            }
     	});
-//    	try {
-//			Thread.sleep(500);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
+    	try {
+			latch.await();
+		} catch (InterruptedException e) {
+			
+			e.printStackTrace();
+		}
     	String getRat = getMovieRating(movie_id);
     	num = movie.getRating();
     	double curRat = Double.parseDouble(num);
@@ -417,6 +429,49 @@ public class HomeController {
 				
 			}
 		});
+    }
+    
+    private User signin(byte[] email, byte[] password) {
+    	CountDownLatch latch = new CountDownLatch(1);
+    	
+    	User user = new User();
+    	String bytesEncoded_email = Base64.getEncoder().encodeToString(email);
+    	String bytesEncoded_pass = Base64.getEncoder().encodeToString(password);
+    	Query q = FirebaseDatabase.getInstance().getReference().child("Users").child(bytesEncoded_email);
+    	q.addValueEventListener(
+    	        new ValueEventListener() {
+    	            @Override
+    	            public void onDataChange(DataSnapshot dataSnapshot) {
+    	            	if (dataSnapshot.exists()) {
+    	            	
+    	            			User user_ = dataSnapshot.getValue(User.class);
+    	            			user.setEmail(user_.getEmail());
+    	            			user.setUsername(user_.getUsername());
+    	            			user.setPassword(user_.getPassword());
+    	            			latch.countDown();
+    	            	}else {
+    	            		System.out.println("User login error");
+    	            	}
+    	            }
+
+    	            @Override
+    	            public void onCancelled(DatabaseError databaseError) {
+    	            	System.out.println(databaseError);
+    	            	latch.countDown();
+    	            }
+    	});
+    	try {
+			latch.await();
+		} catch (InterruptedException e) {
+			
+			e.printStackTrace();
+		}
+    	if(!Objects.equals(user.getPassword(), bytesEncoded_pass)) {
+    		System.out.println("Invalid password");
+    		//TODO retunr null
+    		return user;
+    	}
+    	return user;    	
     }
     
 }
