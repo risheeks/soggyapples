@@ -50,7 +50,7 @@
 				<th>Description</th>
 		</tr>
 		<c:forEach items="${movies}" var="movie">
-					<c id="products">
+					<c id="movies">
 					
 					<tr>
 						<td><a href="/pick-${movie.id}" ><img height="100" width="100" src="https://image.tmdb.org/t/p/w500/${movie.posterPath}"/></a></td>

@@ -1,5 +1,7 @@
 package com.cs252.soggyapples;
 
+import java.util.List;
+
 import com.google.cloud.Date;
 
 public class Movie {
@@ -9,7 +11,7 @@ public class Movie {
 	String date;
 	String id;
 	String rating;
-	
+	List<Comment> comments;
 	
 	public Movie() {
 		
@@ -61,6 +63,14 @@ public class Movie {
 
 	public void setRating(String rating) {
 		this.rating = rating;
+	}
+
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}	
 	
 }
