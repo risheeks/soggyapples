@@ -35,6 +35,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import com.google.common.collect.Lists;
+
 @Controller
 public class HomeController {
     
@@ -185,6 +187,8 @@ public class HomeController {
 		
 		
 		movie.setRating(getMovieRating(id));
+		movie.comments = getAllComments(id);
+		movie.setRating(getMovieRating(id));
 		session.setAttribute("comments", movie.getComments());
 		session.setAttribute("pick", movie);
 		return "/pick";
@@ -313,10 +317,14 @@ public class HomeController {
     	            }
     	});
     	
-    	Collections.reverse(comments); 
-		return comments;
+    	//Collections.reverse(comments); 
+    	List<Comment> comments_rev = new ArrayList<Comment>();
+    	comments_rev = Lists.reverse(comments);
+		return comments_rev;
     	
     }
+    
+    
     private String getMovieRating(String movie_id) {
     	Movie movie = new Movie();
     	Query q = FirebaseDatabase.getInstance().getReference().child("Movies").child(movie_id).child("ratings");
@@ -354,7 +362,7 @@ public class HomeController {
     	            @Override
     	            public void onDataChange(DataSnapshot dataSnapshot) {
     	            	if (dataSnapshot.exists()) {
-    	            		movie.setNumRating(dataSnapshot.getValue((String.class)));
+    	            		movie.setRating(dataSnapshot.getValue((String.class)));
     	            		System.out.println("get rating fb: " + movie.getRating());
     	            		return;
     	            	}
@@ -371,7 +379,7 @@ public class HomeController {
 			e.printStackTrace();
 		}
     	String getRat = getMovieRating(movie_id);
-    	num = movie.getNumRating();
+    	num = movie.getRating();
     	double curRat = Double.parseDouble(num);
     	double newRat = ((curRat * Double.parseDouble(getRat)) + Double.parseDouble(value))/(curRat+1.0);
     	newRat =  Math.round(newRat * 10) / 10.0;

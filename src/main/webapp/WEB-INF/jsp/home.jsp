@@ -39,9 +39,19 @@ body {font-family: "Open Sans"}
 .w3-badge {height:13px;width:13px;padding:0}
 </style>
 
-<div class="w3-bar w3-black w3-hide-small">
-  <a href="http://www.imdb.com" class="w3-bar-item w3-button"><i>IMDB</i></a>
-</div>
+<nav class="navbar navbar-inverse">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="https://www.imdb.com">IMDB</a>
+			</div>
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li><a href="/">Home</a></li>
+					<li><a class="active" >About</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
   
 
 <!-- w3-content defines a container for fixed size centered content, 
