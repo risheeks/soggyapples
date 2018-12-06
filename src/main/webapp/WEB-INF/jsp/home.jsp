@@ -30,10 +30,10 @@ h1,h2,h3,h4,h5,h6 {font-family: "Oswald"}
 body {font-family: "Open Sans"}
 #limit {max-width: 500px;}
 .mySlides {display:none;
-			display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 50%;
+			display: block;  
+    margin-right: 1150px;
+    margin-left: 150px;
+    
 }
 .w3-left, .w3-right, .w3-badge {cursor:pointer}
 .w3-badge {height:13px;width:13px;padding:0}
@@ -46,7 +46,7 @@ body {font-family: "Open Sans"}
 
 <!-- w3-content defines a container for fixed size centered content, 
 and is wrapped around the whole page content, except for the footer in this example -->
-<div class="w3-content" style="max-width:1200px">
+<div class="w3-content" style="max-width:1600px">
 
   <!-- Header -->
   <header class="w3-container w3-center w3-padding-48 w3-light-grey">
@@ -68,25 +68,28 @@ and is wrapped around the whole page content, except for the footer in this exam
   	</form> 
   </div>
   
-
+	<h1 class="w3-center w3-large"><b>Current Movies in Theater!!!!</b></h1>
   	<c:forEach items="${movies}" var="movie">
-		<a href="/pick-${movie.id}" ><img class="mySlides" height="300" width="250" src="https://image.tmdb.org/t/p/w500/${movie.posterPath}"></a>			
+
+		<a class="mySlides" href="/pick-${movie.title}"><img  height="300" width="250" src="https://image.tmdb.org/t/p/w500/${movie.posterPath}"> <h2 class="w3-center">${movie.title}</h2></a>
 	</c:forEach>
   
 
  
 
-  <div class="w3-center w3-container w3-section w3-text-white w3-display-bottommiddle" style="width:30%">
+  <div class="w3-left w3-container w3-section w3-text-white w3-display-bottomleft" style="width:15%; margin-left:158px;">
     <div class="w3-left w3-hover-text-khaki" onclick="plusDivs(-1)">&#10094;</div>
     <div class="w3-right w3-hover-text-khaki" onclick="plusDivs(1)">&#10095;</div>
     <!-- <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(1)"></span>
     <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(2)"></span>
     <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(3)"></span> -->
     <c:forEach items="${movies}" var="movie" varStatus="loop">
-    	    <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv([loop.count])"></span>
+    	    <span class="w3-badge demo w3-border w3-transparent w3-hover-cyan" onclick="currentDiv([loop.count])"></span>
 	</c:forEach>
   </div>
-  
+	<br>  
+	
+	
 
 <!-- Footer -->
 <footer class="w3-container w3-dark-grey" style="padding:32px">
@@ -95,13 +98,18 @@ and is wrapped around the whole page content, except for the footer in this exam
 <script>
 var slideIndex = 1;
 showDivs(slideIndex);
+ var b = 0;
+
 
 function plusDivs(n) {
   showDivs(slideIndex += n);
+  b = 1;
+  
 }
 
 function currentDiv(n) {
-  showDivs(slideIndex = n);
+  showDivs(slideIndex = n); 
+  b =1; 
 }
 
 function showDivs(n) {
@@ -113,11 +121,17 @@ function showDivs(n) {
   for (i = 0; i < x.length; i++) {
      x[i].style.display = "none";  
   }
+  if(b == 0) {
+  	slideIndex++;
+  }
   for (i = 0; i < dots.length; i++) {
      dots[i].className = dots[i].className.replace(" w3-white", "");
   }
+  if (slideIndex > x.length) {slideIndex = 1} 
   x[slideIndex-1].style.display = "block";  
+  setTimeout(showDivs, 2000);
   dots[slideIndex-1].className += " w3-white";
+
 }
 </script>
 </body>
