@@ -54,10 +54,8 @@ and is wrapped around the whole page content, except for the footer in this exam
     <h6>Welcome to the website where you can <span class="w3-tag">rate and comment on movies!</span></h6>
   </header>
   
-
-  
-
   <div class="w3-container w3-white w3-center w3-light-grey">
+
   	<div class="w3-container w3-padding w3-black">
           <h5>Enter the name of a movie below</h5>
   	</div>
@@ -72,8 +70,8 @@ and is wrapped around the whole page content, except for the footer in this exam
   
 	<h1 class="w3-center w3-large"><b>Current Movies in Theater!!!!</b></h1>
   	<c:forEach items="${movies}" var="movie">
+
 		<a class="mySlides" href="/pick-${movie.title}"><img  height="300" width="250" src="https://image.tmdb.org/t/p/w500/${movie.posterPath}"> <h2 class="w3-center">${movie.title}</h2></a>
-		
 	</c:forEach>
   
 
