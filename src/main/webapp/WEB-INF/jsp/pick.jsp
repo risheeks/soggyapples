@@ -64,8 +64,19 @@
 	
 	<table class="table table-striped">
 		<tr>
-			<td></td>
 			<td><img height="300" width="250" src="https://image.tmdb.org/t/p/w500/${pick.posterPath}"/> </td>
+			<td>
+				<form action="/pick-${pick.id}" method="POST">
+					<h5>Rating:</h5>
+					<input style="width: 70px;" class="w3-input w3-border" type="number" name="rating" min="0" max="5" step="1" value="5">
+					<br>
+			        <h5>Comment:</h5> 
+			        <input class="w3-input w3-border" type="text" name="comment">
+			        <br>
+				   	<!-- <input type="submit" value="Submit" /> -->
+				    <p><button type="submit" value="Submit" class="w3-button w3-block w3-cyan">Find Movie!</button></p>
+			  	</form> 
+			</td>
 		</tr>
 		<tr>
 			<td><h2>Description: </h2></td>
@@ -81,21 +92,23 @@
 		</tr>
 		<tr>
 			<td><h2>Comments: </h2></td>
-			<td><h3>**Coming Soon**</h3></td>
+			<td>
+				<table class="table">
+					<c:forEach items="${comments}" var="comment">
+								<tr>
+									<td><h5>${comment.comment}</h5></td>
+								</tr>
+								<tr>
+									<td><font size = "1">${comment.timestamp}</font><br /></td>
+								</tr>
+					</c:forEach>
+				</table>
+			</td>
 		</tr>
+		
 	</table>
 	
-	<form action="/pick-${pick.id}" method="POST">
-		
-	   	<input type="radio" name="rating" value="1" class="star">
-        <input type="radio" name="rating" value="2" class="star">
-        <input type="radio" name="rating" value="3" class="star">
-        <input type="radio" name="rating" value="4" class="star">
-        <input type="radio" name="rating" value="5" class="star">
-	   
-	   		<!-- <input type="submit" value="Submit" /> -->
-	    <p><button type="submit" value="Submit" class="w3-button w3-block w3-cyan">Find Movie!</button></p>
-  	</form> 
+	
 </body>
 
 <footer class="w3-container w3-dark-grey" style="padding:32px">

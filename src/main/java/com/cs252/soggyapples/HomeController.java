@@ -138,7 +138,6 @@ public class HomeController {
 			
 			e.printStackTrace();
 		}
-		session.setAttribute("pick", movie);
 		
 		try {
 			
@@ -155,6 +154,64 @@ public class HomeController {
 			movieData.put("ratings", "0");
 			movieData.put("title", movie.getTitle());
 			commentData.put("comment", "default");
+			commentData.put("timestamp", String.valueOf(time));
+			
+			usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+				  public void onDataChange(DataSnapshot snapshot) {
+				    if (snapshot.hasChild(id)) {
+				    	String comment_key = mDatabase.push().getKey();
+				    	System.out.println("Movie exists!");
+				    	//usersRef.child(id).child("comments").child(comment_key).setValueAsync(commentData);
+				    }else {
+				    	String comment_key = mDatabase.push().getKey();  
+				    	usersRef.child(id).setValueAsync(movieData);
+				    	//usersRef.child(id).child("comments").child(comment_key).setValueAsync(commentData);
+				    }
+				  }
+	
+				@Override
+				public void onCancelled(DatabaseError error) {
+					System.out.println(error);
+					
+				}
+				});
+			
+	        
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+		movie.comments = getAllComments(id);
+		movie.setRating("0");
+		session.setAttribute("comments", movie.getComments());
+		session.setAttribute("pick", movie);
+		return "/pick";
+	}
+	
+	@RequestMapping(value = { "/pick-{id}" }, method = RequestMethod.POST)
+    public String update(@PathVariable String id, @RequestParam("rating") String rating, @RequestParam("comment") String comment, HttpServletRequest request) throws IOException {
+		Movie movie = new Movie();
+		try {
+			String res = getMovie(id);
+			JSONObject obj = new JSONObject(res);
+			movie = (new Movie(obj.getString("title"), obj.getString("poster_path"), obj.getString("overview"), obj.getString("release_date"), obj.getInt("id")));
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		try {
+			mDatabase = FirebaseDatabase.getInstance().getReference();
+			
+			DatabaseReference usersRef = mDatabase.child("Movies");
+			Map<String, String> movieData = new HashMap<String, String>();
+			Map<String, String> commentData = new HashMap<String, String>();
+			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			long time = timestamp.getTime();
+			String key = mDatabase.push().getKey();   
+			movieData.put("id", key);
+			movieData.put("num_ratings", "0");
+			movieData.put("ratings", movie.getRating());
+			movieData.put("title", movie.getTitle());
+			commentData.put("comment", comment);
 			commentData.put("timestamp", String.valueOf(time));
 			
 			usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -181,13 +238,10 @@ public class HomeController {
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
-		return "/pick";
-	}
-	
-	@RequestMapping(value = { "/pick-{id}" }, method = RequestMethod.POST)
-    public String update(@PathVariable String id, @RequestParam("rating") String rating, HttpServletRequest request) throws IOException {
+		
 		
 		System.out.println("Rating: " + rating);
+		System.out.println("Comment: " + comment);
 		return "/pick";
 	}
 	

@@ -1,6 +1,9 @@
 package com.cs252.soggyapples;
 
 
+import java.util.List;
+
+
 public class Movie {
 	String title;
 	String posterPath;
@@ -8,8 +11,8 @@ public class Movie {
 	String date;
 	String id;
 	String rating;
+	List<Comment> comments;
 	String numRating;
-	
 	
 	public Movie() {
 		
@@ -69,6 +72,14 @@ public class Movie {
 
 	public void setRating(String rating) {
 		this.rating = rating;
+	}
+
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}	
 	
 }
