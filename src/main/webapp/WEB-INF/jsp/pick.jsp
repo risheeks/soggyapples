@@ -54,60 +54,74 @@
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
 					<li><a href="/">Home</a></li>
-					<li><a class="active" >About</a></li>
+					<li><a href="/about">About</a></li>
 				</ul>
 			</div>
 		</div>
 	</nav>
-	
-	<h1>${pick.title}</h1>
-	
-	<table class="table table-striped">
-		<tr>
-			<td><img height="300" width="250" src="https://image.tmdb.org/t/p/w500/${pick.posterPath}"/> </td>
-			<td>
-				<form action="/pick-${pick.id}" method="POST">
-					<h5>Rating:</h5>
-					<input style="width: 70px;" class="w3-input w3-border" type="number" name="rating" min="0" max="5" step="1" value="5">
-					<br>
-			        <h5>Comment:</h5> 
-			        <input class="w3-input w3-border" type="text" name="comment">
-			        <br>
-				   	<!-- <input type="submit" value="Submit" /> -->
-				    <p><button type="submit" value="Submit" class="w3-button w3-block w3-cyan">Find Movie!</button></p>
-			  	</form> 
-			</td>
-		</tr>
-		<tr>
-			<td><h2>Description: </h2></td>
-			<td><h3>${pick.description}</h3></td>
-		</tr>
-		<tr>
-			<td><h2>Release Date: </h2></td>
-			<td><h3>${pick.date}</h3></td>
-		</tr>
-		<tr>
-			<td><h2>Movie Rating: </h2></td>
-			<td><h3>${pick.rating}</h3></td>
-		</tr>
-		<tr>
-			<td><h2>Comments: </h2></td>
-			<td>
-				<table class="table">
-					<c:forEach items="${comments}" var="comment">
-								<tr>
-									<td><h5>${comment.comment}</h5></td>
-								</tr>
-								<tr>
-									<td><font size = "1">${comment.timestamp}</font><br /></td>
-								</tr>
-					</c:forEach>
-				</table>
-			</td>
-		</tr>
+	<!-- <div class="w3-container w3-white w3-display-topright w3-light-grey">
+		<br>
+		<br>
+		<br>
+		<div class="w3-container w3-padding w3-black">
+			<h5>Enter the name of a movie below</h5>
+		</div>
+		<form action="/api" method="POST">
+				   	
+		   	<p><input class="w3-input w3-border" type="text" name="title" placeholder="Enter movie" ></p>
+			<input type="submit" value="Submit" />
+		    <p><button type="submit" value="Submit" class="w3-button w3-block w3-cyan">Find Movie!</button></p>
+		</form> 
+	</div> -->
+	<div class="w3-container w3-white w3-light-grey">
+		<h1>${pick.title}</h1>
 		
-	</table>
-	
+		<table class="table table-striped">
+			<tr>
+				<td><img height="300" width="250" src="https://image.tmdb.org/t/p/w500/${pick.posterPath}"/> </td>
+				<td>
+					<form action="/pick-${pick.id}" method="POST">
+						<h5>Rating:</h5>
+						<input style="width: 70px;" class="w3-input w3-border" type="number" name="rating" min="0" max="5" step="1" value="5">
+						<br>
+				        <h5>Comment:</h5> 
+				        <input class="w3-input w3-border" type="text" name="comment">
+				        <br>
+					   	<!-- <input type="submit" value="Submit" /> -->
+					    <p><button type="submit" value="Submit" class="w3-button w3-block w3-cyan">Send</button></p>
+				  	</form> 
+				</td>
+			</tr>
+			<tr>
+				<td><h2>Description: </h2></td>
+				<td><h3>${pick.description}</h3></td>
+			</tr>
+			<tr>
+				<td><h2>Release Date: </h2></td>
+				<td><h3>${pick.date}</h3></td>
+			</tr>
+			<tr>
+				<td><h2>Movie Rating: </h2></td>
+				<td><h3>${pick.rating}</h3></td>
+			</tr>
+			<tr>
+				<td><h2>Comments: </h2></td>
+				<td>
+					<table class="table">
+						<c:forEach items="${comments}" var="comment">
+									<tr>
+										<td><h5>${comment.comment}</h5></td>
+									</tr>
+									<tr>
+										<td><font size = "1">${comment.timestamp}</font><br /></td>
+									</tr>
+						</c:forEach>
+					</table>
+				</td>
+			</tr>
+			
+		</table>
+	</div>
 	
 </body>
 
