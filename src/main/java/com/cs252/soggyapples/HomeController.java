@@ -76,15 +76,9 @@ public class HomeController {
         //session.setAttribute("title", title);
         //setMovieRating("335983", "5");
         
-        try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-        
-      
         return "/home";
   }
+  
   @RequestMapping(value = { "/api" }, method = RequestMethod.POST)
   public String api(@RequestParam("title") String title, HttpServletRequest request) throws IOException {
 		
@@ -166,26 +160,6 @@ public class HomeController {
 	        e.printStackTrace();
 	    }
 		
-//		movie.comments = getAllComments(id);
-//		try {
-//			Thread.sleep(1000);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//		for(Comment c:movie.comments) {
-//    		Calendar calendar = Calendar.getInstance();
-//    		calendar.setTimeInMillis(Long.parseLong(c.getTimestamp()));
-//
-//    		int mYear = calendar.get(Calendar.YEAR);
-//    		int mMonth = calendar.get(Calendar.MONTH);
-//    		int mDay = calendar.get(Calendar.DAY_OF_MONTH);
-//    		int mHour = calendar.get(Calendar.HOUR);
-//    		int mMinute = calendar.get(Calendar.MINUTE);
-//    		c.setTimestamp("Time:"+mHour+ ":" +mMinute + "   Date " + mDay + "-" + mMonth + "-" + mYear);
-//    		System.out.println(c.getTimestamp());
-//    	}
-		
-		
 		movie.setRating(getMovieRating(id));
 		movie.comments = getAllComments(id);
 		movie.setRating(getMovieRating(id));
@@ -260,7 +234,12 @@ public class HomeController {
 		return "/pick";
 	}
 
-    
+	@RequestMapping(value = { "/about" }, method = RequestMethod.GET)
+	  public String about(Map<String, Object> model, HttpServletRequest request) throws IOException {
+	        
+	        return "/about";
+	  }
+	
     private String sendGet(String id, String movie_url, String suffix) throws Exception {
         
         
@@ -316,7 +295,11 @@ public class HomeController {
     	            	System.out.println("getAllComments error");
     	            }
     	});
-    	
+//    	try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
     	//Collections.reverse(comments); 
     	List<Comment> comments_rev = new ArrayList<Comment>();
     	comments_rev = Lists.reverse(comments);
@@ -345,7 +328,7 @@ public class HomeController {
     	            }
     	});
     	try {
-			Thread.sleep(1000);
+			Thread.sleep(750);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -373,11 +356,11 @@ public class HomeController {
     	                System.out.println("getMovieRating error");
     	            }
     	});
-    	try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+//    	try {
+//			Thread.sleep(500);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
     	String getRat = getMovieRating(movie_id);
     	num = movie.getRating();
     	double curRat = Double.parseDouble(num);
