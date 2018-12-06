@@ -1,8 +1,8 @@
 package com.cs252.soggyapples;
 
+
 import java.util.List;
 
-import com.google.cloud.Date;
 
 public class Movie {
 	String title;
@@ -12,6 +12,7 @@ public class Movie {
 	String id;
 	String rating;
 	List<Comment> comments;
+	String numRating;
 	
 	public Movie() {
 		
@@ -26,6 +27,14 @@ public class Movie {
 		this.rating = "0";                                 //remove once fixed
 	}
 	
+	public String getNumRating() {
+		return numRating;
+	}
+
+	public void setNumRating(String numRating) {
+		this.numRating = numRating;
+	}
+
 	public String getTitle() {
 		return title;
 	}

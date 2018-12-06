@@ -9,6 +9,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,7 +50,7 @@ public class HomeController {
     
     @Value("${home.message}")
     private String message;
-
+    
 	private String baseURL = "https://image.tmdb.org/t/p/w500/";
 	private String searchURL = "https://api.themoviedb.org/3/search/movie?api_key=5b85ae54ca7b9e80f18626c3b0fd285b&query=";
 	private String movieURL = "https://api.themoviedb.org/3/movie/";
@@ -61,7 +62,7 @@ public class HomeController {
         
         List<Movie> movies = new ArrayList<Movie>();
         try {
-            String res = sendGet("", recentURL);
+            String res = sendGet("", recentURL, "&sort_by=popularity");
             JSONObject obj = new JSONObject(res);
 
             JSONArray arr = obj.getJSONArray("results");
@@ -79,13 +80,18 @@ public class HomeController {
         HttpSession session = request.getSession();
         session.setAttribute("movies", movies);
         //session.setAttribute("title", title);
-        
+        setMovieRating("335983", "5");
         List<Comment> comments = getAllComments("335983");
+        
+        
         try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+        
+        
+        
         System.out.println("get size: " + comments.size());
         for(int i =0 ; i < comments.size(); i++) {
         	System.out.println(comments.get(i).getComment());
@@ -99,7 +105,7 @@ public class HomeController {
 		
 		List<Movie> movies = new ArrayList<Movie>();
 		try {
-			String res = sendGet(title, searchURL);
+			String res = sendGet(title, searchURL, "&sort_by=popularity");
 			JSONObject obj = new JSONObject(res);
 
 			JSONArray arr = obj.getJSONArray("results");
@@ -124,13 +130,9 @@ public class HomeController {
 		//session.setAttribute("movie", id);
 		Movie movie = new Movie();
 		try {
-			String res = getMovie(id);
+			//String res = getMovie(id);
+			String res = sendGet(id, movieURL, api_key);
 			JSONObject obj = new JSONObject(res);
-			//JSONArray arr = obj.getJSONArray("bindings");
-//			for (int i = 0; i < arr.length(); i++)
-//			{
-//				movie = (new Movie(arr.getJSONObject(i).getString("title"), arr.getJSONObject(i).getString("poster_path"), arr.getJSONObject(i).getString("overview"), arr.getJSONObject(i).getString("release_date"), arr.getJSONObject(i).getInt("id")));
-//			}
 			movie = (new Movie(obj.getString("title"), obj.getString("poster_path"), obj.getString("overview"), obj.getString("release_date"), obj.getInt("id")));
 		} catch (Exception e) {
 			
@@ -138,6 +140,7 @@ public class HomeController {
 		}
 		
 		try {
+			
 			mDatabase = FirebaseDatabase.getInstance().getReference();
 			
 			DatabaseReference usersRef = mDatabase.child("Movies");
@@ -242,42 +245,42 @@ public class HomeController {
 		return "/pick";
 	}
 	
-private String getMovie(String id) throws Exception {
-		
-		String url = movieURL + URLEncoder.encode(id, "UTF-8") + api_key;
-		
-		URL obj = new URL(url);
-		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-		// optional default is GET
-		con.setRequestMethod("GET");
-
-		//add request header
-		//con.setRequestProperty("User-Agent", USER_AGENT);
-
-		int responseCode = con.getResponseCode();
-		System.out.println("\nSending 'GET' request to URL : " + url);
-		System.out.println("Response Code : " + responseCode);
-
-		BufferedReader in = new BufferedReader(
-		        new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
-		}
-		in.close();
-		return response.toString();
-		//System.out.println(response.toString());
-
-	}
+//private String getMovie(String id) throws Exception {
+//		
+//		String url = movieURL + URLEncoder.encode(id, "UTF-8") + api_key;
+//		
+//		URL obj = new URL(url);
+//		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+//
+//		// optional default is GET
+//		con.setRequestMethod("GET");
+//
+//		//add request header
+//		//con.setRequestProperty("User-Agent", USER_AGENT);
+//
+//		int responseCode = con.getResponseCode();
+//		System.out.println("\nSending 'GET' request to URL : " + url);
+//		System.out.println("Response Code : " + responseCode);
+//
+//		BufferedReader in = new BufferedReader(
+//		        new InputStreamReader(con.getInputStream()));
+//		String inputLine;
+//		StringBuffer response = new StringBuffer();
+//
+//		while ((inputLine = in.readLine()) != null) {
+//			response.append(inputLine);
+//		}
+//		in.close();
+//		return response.toString();
+//		//System.out.println(response.toString());
+//
+//	}
 	    
     
-    private String sendGet(String title, String movie_url) throws Exception {
+    private String sendGet(String title, String movie_url, String suffix) throws Exception {
         
         
-        String url = movie_url + URLEncoder.encode(title, "UTF-8")+"&sort_by=popularity";
+        String url = movie_url + URLEncoder.encode(title, "UTF-8")+suffix;
         
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -326,12 +329,90 @@ private String getMovie(String id) throws Exception {
 
     	            @Override
     	            public void onCancelled(DatabaseError databaseError) {
-    	                // read query is cancelled.
+    	            	System.out.println("getAllComments error");
     	            }
     	});
     	Collections.reverse(comments); 
 		return comments;
     	
+    }
+    private String getMovieRating(String movie_id) {
+    	Movie movie = new Movie();
+    	Query q = FirebaseDatabase.getInstance().getReference().child("Movies").child(movie_id).child("ratings");
+    	q.addValueEventListener(
+    	        new ValueEventListener() {
+    	            @Override
+    	            public void onDataChange(DataSnapshot dataSnapshot) {
+    	            	if (dataSnapshot.exists()) {
+    	            		movie.setRating(dataSnapshot.getValue((String.class)));
+    	            		//System.out.println("get rating fb: " + movie.getRating());
+    	            		return;
+    	            	}
+    	            }
+
+    	            @Override
+    	            public void onCancelled(DatabaseError databaseError) {
+    	                System.out.println("getMovieRating error");
+    	            }
+    	});
+    	try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+    	//System.out.println("get rating fb: " + movie.getRating());
+    	return movie.getRating();
+    }
+    
+    private void setMovieRating(String movie_id, String value) {
+    	Movie movie = new Movie();
+    	String num="";
+    	Query q = FirebaseDatabase.getInstance().getReference().child("Movies").child(movie_id).child("num_ratings");
+    	q.addValueEventListener(
+    	        new ValueEventListener() {
+    	            @Override
+    	            public void onDataChange(DataSnapshot dataSnapshot) {
+    	            	if (dataSnapshot.exists()) {
+    	            		movie.setNumRating(dataSnapshot.getValue((String.class)));
+    	            		System.out.println("get rating fb: " + movie.getRating());
+    	            		return;
+    	            	}
+    	            }
+
+    	            @Override
+    	            public void onCancelled(DatabaseError databaseError) {
+    	                System.out.println("getMovieRating error");
+    	            }
+    	});
+    	try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+    	String getRat = getMovieRating(movie_id);
+    	num = movie.getNumRating();
+    	double curRat = Double.parseDouble(num);
+    	double newRat = ((curRat * Double.parseDouble(getRat)) + Double.parseDouble(value))/(curRat+1.0);
+    	DecimalFormat df = new DecimalFormat("#.#");
+    	df.format(newRat);
+    	Map<String, Object> rating_map = new HashMap< String,Object>();
+    	Map<String, Object> numRating_map = new HashMap< String,Object>();
+    	
+    	rating_map.put("ratings", String.valueOf(newRat));
+    	numRating_map.put("num_ratings", String.valueOf(curRat+1.0));
+    	DatabaseReference usersRef = (DatabaseReference) FirebaseDatabase.getInstance().getReference().child("Movies").child(movie_id);
+    	usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+			  public void onDataChange(DataSnapshot snapshot) {
+				  usersRef.updateChildrenAsync(rating_map);
+				  usersRef.updateChildrenAsync(numRating_map);
+			  }
+			@Override
+			public void onCancelled(DatabaseError error) {
+				System.out.println(error);
+				
+			}
+		});
+		
     }
     
 }
