@@ -6,11 +6,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Calendar;
-import java.util.Collections;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,6 +41,7 @@ import com.google.common.collect.Lists;
 public class HomeController {
     
     private DatabaseReference mDatabase;
+   
     
     @Value("${home.message}")
     private String message;
@@ -53,7 +54,8 @@ public class HomeController {
     
   @RequestMapping(value = { "/" }, method = RequestMethod.GET)
   public String welcome(Map<String, Object> model, HttpServletRequest request) throws IOException {
-        
+	  
+	  	createUser("si22hant@gmail.com".getBytes(), "123456".getBytes(), "siddhant97");
         List<Movie> movies = new ArrayList<Movie>();
         try {
             String res = sendGet("", recentURL, "&sort_by=popularity");
@@ -384,6 +386,37 @@ public class HomeController {
 			}
 		});
 		
+    }
+    
+    private void createUser(byte[] email, byte[] password, String username) {
+    	
+    	String s = new String(email);
+    	Map<String, String> UserData = new HashMap<String, String>();
+    	UserData.put("email", s);
+    	mDatabase = FirebaseDatabase.getInstance().getReference();
+    	String bytesEncoded_pass = Base64.getEncoder().encodeToString(password);
+    	String bytesEncoded_email = Base64.getEncoder().encodeToString(email);
+		
+		System.out.println("encoded email: " + bytesEncoded_email);
+		DatabaseReference usersRef = mDatabase.child("Users");
+		UserData.put("password", bytesEncoded_pass);
+		UserData.put("username", username);
+		
+		
+		usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+			  public void onDataChange(DataSnapshot snapshot) {
+			    if (snapshot.hasChild(bytesEncoded_email)) {
+			    	System.out.println("User exists!");
+			    }else {
+			    	usersRef.child(bytesEncoded_email).setValueAsync(UserData);
+			    }
+			  }
+			@Override
+			public void onCancelled(DatabaseError error) {
+				System.out.println(error);
+				
+			}
+		});
     }
     
 }
