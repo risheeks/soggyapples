@@ -20,17 +20,28 @@
 
 	<nav class="navbar navbar-inverse">
 		<div class="container">
-			<div class="navbar-header">
+			<!-- <div class="navbar-header">
 				<a class="navbar-brand" href="https://www.imdb.com">IMDB</a>
-			</div>
+			</div> -->
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
+					<c:if test="${not empty loggedInUser}">
+						<li style="margin-left:1500;" ><a>Welcome ${loggedInUser.username}</a></li>
+					</c:if>
+					<c:if test="${empty loggedInUser}">
+						<li><a class="navbar-brand" href="https://www.imdb.com">IMDB</a></li>
+					</c:if>
 					<li><a href="/">Home</a></li>
 					<li><a href="/about">About</a></li>
+					<c:if test="${not empty loggedInUser}">
+						<li><a href="/logout">Logout</a></li>
+					</c:if>
+					
 				</ul>
 			</div>
 		</div>
 	</nav>
+  
 	
 	<script type="text/javascript" src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	
