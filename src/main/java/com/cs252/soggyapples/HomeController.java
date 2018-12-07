@@ -285,11 +285,11 @@ public class HomeController {
 		return "/pick";
 	}
 	
-	@RequestMapping(value = { "/logout" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/logout" }, method = RequestMethod.GET)
 	public String logout(HttpServletRequest request) throws IOException {        
 		HttpSession session = request.getSession();
-		
-		return "/";
+		session.removeAttribute("loggedInUser");
+		return "/home";
 	}
 	
     private String sendGet(String id, String movie_url, String suffix) throws Exception {
