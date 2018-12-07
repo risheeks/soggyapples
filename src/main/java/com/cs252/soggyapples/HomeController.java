@@ -412,6 +412,7 @@ public class HomeController {
 			
 			e.printStackTrace();
 		}
+    	CountDownLatch latch1 = new CountDownLatch(1);
     	String getRat = getMovieRating(movie_id);
     	num = movie.getRating();
     	double curRat = Double.parseDouble(num);
@@ -427,13 +428,21 @@ public class HomeController {
 			  public void onDataChange(DataSnapshot snapshot) {
 				  usersRef.updateChildrenAsync(rating_map);
 				  usersRef.updateChildrenAsync(numRating_map);
+				  latch1.countDown();
 			  }
 			@Override
 			public void onCancelled(DatabaseError error) {
 				System.out.println(error);
+				latch1.countDown();
 				
 			}
 		});
+    	try {
+			latch1.await();
+		} catch (InterruptedException e) {
+			
+			e.printStackTrace();
+		}
 		
     }
     
