@@ -38,7 +38,9 @@ body {font-family: "Open Sans"}
 }
 body {
  
-  background-image: url(https://www.w3schools.com//w3images/mist.jpg);
+  background-image: url(https://www.pixelstalk.net/wp-content/uploads/2016/11/Flat-Design-Wallpapers-HD-768x432.png);
+  background-size: 100% 100%;
+   
 }
 .w3-left, .w3-right, .w3-badge {cursor:pointer}
 .w3-badge {height:13px;width:13px;padding:0}
@@ -63,13 +65,12 @@ body {
 and is wrapped around the whole page content, except for the footer in this example -->
 <div class="w3-content" style="max-width:1600px">
 
-  <!-- Header -->
-  <header class="w3-container w3-center w3-padding-48 w3-light-grey">
-    <h1 class="w3-xxxlarge"><b>SOGGY APPLES</b></h1>
-    <h6>Welcome to the website where you can <span class="w3-tag">rate and comment on movies!</span></h6>
+  
+    <h1 class="w3-xxxlarge w3-center"><b>SOGGY APPLES</b></h1>
+    <h3 class=" w3-center">Welcome to the website where you can <span class="w3-tag">rate and comment on movies!</span></h3>
   </header>
   
-  <div class="w3-container w3-white w3-center w3-light-grey">
+  
 
   	<div class="w3-container w3-padding w3-black">
           <h5>Enter the name of a movie below</h5>
@@ -83,14 +84,14 @@ and is wrapped around the whole page content, except for the footer in this exam
   	</form> 
   </div>
   
-	<h1 class="w3-center w3-xxlarge"><b>Current Movies in Theater!!!!</b></h1>
+	<h1 class="w3-center w3-xxlarge"><b>Current Movies in Theater</b></h1>
   	<c:forEach items="${movies}" var="movie">
-		<a class="mySlides w3-center" href="/pick-${movie.id}"><img  height="300" width="250" src="https://image.tmdb.org/t/p/w500/${movie.posterPath}"> <h1 style="margin-bottom:170px;" class="w3-display-bottommiddle">${movie.title}</h1> <h4 style="margin-left:50px;" class="w3-display-bottommiddle">${movie.description}</h4></a>                                                                     
+		<a class="mySlides w3-center" href="/pick-${movie.id}"><img  height="300" width="250" src="https://image.tmdb.org/t/p/w500/${movie.posterPath}"> <h1 style="margin-bottom:250px; margin-left:60px;" class="w3-display-bottommiddle">${movie.title}</h1> <h4 style="margin-left:80px; margin-bottom:100px;" class="w3-display-bottommiddle">${movie.description}</h4></a>                                                                     
 	</c:forEach>
   
 
 
-  <div class="w3-center w3-container w3-section w3-text-white w3-light-grey" style="width:15%; margin-left:158px;">
+  <div class="w3-center w3-container w3-section w3-text-white w3-transparent" style="width:15%; margin-left:158px;">
     <div class="w3-left w3-hover-text-khaki" onclick="plusDivs(-1)">&#10094;</div>
     <div class="w3-right w3-hover-text-khaki" onclick="plusDivs(1)">&#10095;</div>
     <!-- <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(1)"></span>
