@@ -59,9 +59,6 @@ public class HomeController {
 	  
 	  	//createUser("si22hant@gmail.com".getBytes(), "123456".getBytes(), "siddhant97");
 	  	
-	  	User user = signin("si22hant@gmail.com".getBytes(), "123456".getBytes());
-		System.out.println("user Email: " + user.getEmail() + " username: " + user.getUsername());
-
         List<Movie> movies = new ArrayList<Movie>();
         try {
             String res = sendGet("", recentURL, "&sort_by=popularity");
@@ -289,6 +286,23 @@ public class HomeController {
 	public String logout(HttpServletRequest request) throws IOException {        
 		HttpSession session = request.getSession();
 		session.removeAttribute("loggedInUser");
+		List<Movie> movies = new ArrayList<Movie>();
+        try {
+            String res = sendGet("", recentURL, "&sort_by=popularity");
+            JSONObject obj = new JSONObject(res);
+
+            JSONArray arr = obj.getJSONArray("results");
+            for (int i = 0; i < arr.length(); i++)
+            {
+                if(i == 10) break;
+//                System.out.println(arr.getJSONObject(i).getString("poster_path"));
+                movies.add(new Movie(arr.getJSONObject(i).getString("title"), arr.getJSONObject(i).getString("poster_path"), arr.getJSONObject(i).getString("overview"), arr.getJSONObject(i).getString("release_date"), arr.getJSONObject(i).getInt("id")));
+            }
+        } catch (Exception e) {
+            
+            e.printStackTrace();
+        }
+        session.setAttribute("movies", movies);
 		return "/home";
 	}
 	
