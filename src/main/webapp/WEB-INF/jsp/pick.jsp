@@ -96,6 +96,9 @@
 				<ul class="nav navbar-nav">
 					<li><a href="/">Home</a></li>
 					<li><a href="/about">About</a></li>
+					<c:if test="${not empty loggedInUser}">
+						<li><a href="/logout">Logout</a></li>
+					</c:if>
 				</ul>
 			</div>
 		</div>
