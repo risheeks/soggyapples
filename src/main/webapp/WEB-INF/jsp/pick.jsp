@@ -42,8 +42,49 @@
 	h1,h2,h3,h4,h5,h6 {font-family: "Oswald"}
 	body {font-family: "Open Sans"}
 	#limit {max-width: 500px;}
+	/* The Modal (background) */
+	.modal {
+	    display: none; /* Hidden by default */
+	    position: fixed; /* Stay in place */
+	    z-index: 1; /* Sit on top */
+	    padding-top: 100px; /* Location of the box */
+	    left: 0;
+	    top: 0;
+	    width: 100%; /* Full width */
+	    height: 100%; /* Full height */
+	    overflow: auto; /* Enable scroll if needed */
+	    background-color: rgb(0,0,0); /* Fallback color */
+	    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	}
+	
+	/* Modal Content */
+	.modal-content {
+	    background-color: #fefefe;
+	    margin: auto;
+	    padding: 20px;
+	    border: 1px solid #888;
+	    width: 80%;
+	}
+	
+	/* The Close Button */
+	.close {
+	    color: #aaaaaa;
+	    float: right;
+	    font-size: 28px;
+	    font-weight: bold;
+	}
+	
+	.close:hover,
+	.close:focus {
+	    color: #000;
+	    text-decoration: none;
+	    cursor: pointer;
+	}
 	</style>
 </head>
+
+
+
 <body>
 
 	<nav class="navbar navbar-inverse">
@@ -59,23 +100,75 @@
 			</div>
 		</div>
 	</nav>
-	<!-- <div class="w3-container w3-white w3-display-topright w3-light-grey">
-		<br>
-		<br>
-		<br>
-		<div class="w3-container w3-padding w3-black">
-			<h5>Enter the name of a movie below</h5>
+	<div id="myModal" class="modal">
+	
+	  <div class="panel-heading text-center panel-primary">
+			<h2>Sign In or Register</h2>
 		</div>
-		<form action="/api" method="POST">
-				   	
-		   	<p><input class="w3-input w3-border" type="text" name="title" placeholder="Enter movie" ></p>
-			<input type="submit" value="Submit" />
-		    <p><button type="submit" value="Submit" class="w3-button w3-block w3-cyan">Find Movie!</button></p>
-		</form> 
-	</div> -->
+
+	<div class="w3-container w3-white w3-light-grey">
+	<div class="table-responsive">
+	<div class="panel panel-primary">
+		<div class="panel-heading text-center">
+			<h2>Login</h2>
+		</div>
+		
+		<form action="/login" method="POST">
+			<table class="table table-striped">
+				<tr>
+					<td><h4>Email:</h4></td>
+					<td><input type="email" value="" name="lemail" /></td>
+					<td><h4>Password:</h4></td>
+					<td><input type="password" value="" name="lpassword" /></td>
+					<td ><input id="signIn" type="submit" value='Sign In' class="btn btn-primary" /></td>
+				</tr>
+				
+			</table>
+		</form>
+		<label class="error">${fail}${sucess}</label>
+	</div>
+	</div>
+	
+	
+	<div class="table-responsive">
+	<div class="panel panel-primary">
+		<div class="panel-heading text-center">
+			<h2>Register</h2>
+		</div>
+
+		<form method="POST" action="/register" action="../user/register">
+			<table class="table table-striped">
+				<tr>
+					<td><h4>Username:</h4></td>
+					<td><input type="text" value="" neme="username" /></td>
+				</tr>
+				<tr>
+					<td><h4>Email:</h4></td>
+					<td><input type="email" value="" name="email" /></td>
+				</tr>
+				
+				<tr>
+					<td><h4>Password</h4></td>
+					<td><input type="password" name="password" /></td>
+				</tr>
+				
+				<tr>
+					<td><h4>Confirm Password</h4></td>
+					<td><input type="password" name="confirmPassword" /></td>
+				</tr>
+				
+				<tr>
+					<td><input type="submit" value='Register' class="btn btn-warning" /></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	</div>
+	</div>
+	
+	</div>
 	<div class="w3-container w3-white w3-light-grey">
 		<h1>${pick.title}</h1>
-		
 		<table class="table table-striped">
 			<tr>
 				<td><img height="300" width="250" src="https://image.tmdb.org/t/p/w500/${pick.posterPath}"/> </td>
@@ -88,8 +181,26 @@
 				        <input class="w3-input w3-border" type="text" name="comment">
 				        <br>
 					   	<!-- <input type="submit" value="Submit" /> -->
-					    <p><button type="submit" value="Submit" class="w3-button w3-block w3-cyan">Send</button></p>
+					   	
+						   	<c:if test="${not empty loggedInUser}">
+							   	  <p><button type="submit" value="Submit" class="w3-button w3-block w3-cyan">Send</button></p>
+							</c:if>
+							
+						
+					    <%-- <c:catch var="exception"> 
+						    ${loggedInUser.name} 
+						    <p><button type="submit" value="Submit" class="w3-button w3-block w3-cyan">Send</button></p>
+					    </c:catch>
+						<c:if test="${not empty exception}">
+							<td><button class="w3-button w3-block w3-cyan" type="submit" value="Submit">Login/Register to Submit</button></td>
+						</c:if> --%>
 				  	</form> 
+				  	
+						   	<c:if test="${empty loggedInUser}">
+								<p><button onclick="form.action='SecondServlet';" id="myBtn" class="w3-button w3-block w3-cyan" type="submit" value="Submit">Login/Register to Submit</button></p>
+							</c:if>
+							
+					
 				</td>
 			</tr>
 			<tr>
@@ -122,6 +233,34 @@
 			
 		</table>
 	</div>
+	
+	<script>
+	// Get the modal
+	var modal = document.getElementById('myModal');
+	
+	// Get the button that opens the modal
+	var btn = document.getElementById("myBtn");
+	
+	// Get the <span> element that closes the modal
+	var span = document.getElementsByClassName("close")[0];
+	
+	// When the user clicks the button, open the modal 
+	btn.onclick = function() {
+	    modal.style.display = "block";
+	}
+	
+	// When the user clicks on <span> (x), close the modal
+	span.onclick = function() {
+	    modal.style.display = "none";
+	}
+	
+	// When the user clicks anywhere outside of the modal, close it
+	window.onclick = function(event) {
+	    if (event.target == modal) {
+	        modal.style.display = "none";
+	    }
+	}
+	</script>
 	
 </body>
 
