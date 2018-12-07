@@ -492,8 +492,8 @@ public class HomeController {
 		}
     	if(!Objects.equals(user.getPassword(), bytesEncoded_pass)) {
     		System.out.println("Invalid password");
-    		//TODO retunr null
-    		return user;
+    	
+    		return null;
     	}
     	return user;    	
     }

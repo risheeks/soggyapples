@@ -4,6 +4,7 @@ public class Comment {
 	String timestamp;
 	String comment;
 	
+	
 	public Comment() {
 		
 	}
