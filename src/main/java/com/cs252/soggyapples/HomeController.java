@@ -274,8 +274,13 @@ public class HomeController {
 		if(!password.equals(confirmPassword)) {
 			return "/pick";
 		}
-		createUser(email.getBytes(), password.getBytes(), username);
-		User user = new User(username, email, password);
+		User user = new User();
+		if(createUser(email.getBytes(), password.getBytes(), username) != null) {
+			user = createUser(email.getBytes(), password.getBytes(), username);
+		}else {
+			user = null;
+		}
+		//User user = new User(username, email, password);
 		if(user != null) {
 			session.setAttribute("loggedInUser", user);
 		}
@@ -460,11 +465,14 @@ public class HomeController {
 		
     }
     
-    private void createUser(byte[] email, byte[] password, String username) {
-    	
+    private User createUser(byte[] email, byte[] password, String username) {
+    	CountDownLatch latch = new CountDownLatch(1);
     	String s = new String(email);
     	Map<String, String> UserData = new HashMap<String, String>();
     	UserData.put("email", s);
+    	User user = new User();
+    	
+    	String encr = email.toString();
     	mDatabase = FirebaseDatabase.getInstance().getReference();
     	String bytesEncoded_pass = Base64.getEncoder().encodeToString(password);
     	String bytesEncoded_email = Base64.getEncoder().encodeToString(email);
@@ -479,16 +487,32 @@ public class HomeController {
 			  public void onDataChange(DataSnapshot snapshot) {
 			    if (snapshot.hasChild(bytesEncoded_email)) {
 			    	System.out.println("User exists!");
+			    	latch.countDown();
+			    	
 			    }else {
 			    	usersRef.child(bytesEncoded_email).setValueAsync(UserData);
+			    	user.setEmail(encr);
+			    	user.setUsername(username);
+			    	user.setPassword(bytesEncoded_pass);
+			    	latch.countDown();
 			    }
 			  }
 			@Override
 			public void onCancelled(DatabaseError error) {
 				System.out.println(error);
+				latch.countDown();
 				
 			}
 		});
+		try {
+			latch.await();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		if(user.username != null) {
+			return user;
+		}
+		return null;
     }
     
     private User signin(byte[] email, byte[] password) {
