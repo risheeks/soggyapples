@@ -235,10 +235,22 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = { "/about" }, method = RequestMethod.GET)
-	  public String about(Map<String, Object> model, HttpServletRequest request) throws IOException {
-	        
-	        return "/about";
-	  }
+	public String about(Map<String, Object> model, HttpServletRequest request) throws IOException {        
+	    return "/about";
+	}
+	
+	@RequestMapping(value = { "/login" }, method = RequestMethod.POST)
+	public String login(@RequestParam("lemail") String email, @RequestParam("lpassword") String password, HttpServletRequest request) throws IOException {        
+		HttpSession session = request.getSession();
+		System.out.println("Email: " + email + " password: " + password);
+		return "/pick";
+	}
+	
+	@RequestMapping(value = { "/register" }, method = RequestMethod.POST)
+	public String register(@RequestParam("email") String email, @RequestParam("password") String password, @RequestParam("confirmPassword") String confirmPassword, HttpServletRequest request) throws IOException {        
+		HttpSession session = request.getSession();
+		return "/about";
+	}
 	
     private String sendGet(String id, String movie_url, String suffix) throws Exception {
         
