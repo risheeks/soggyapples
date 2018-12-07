@@ -140,7 +140,7 @@
 			<table class="table table-striped">
 				<tr>
 					<td><h4>Username:</h4></td>
-					<td><input type="text" value="" neme="username" /></td>
+					<td><input type="text" value="" name="username" /></td>
 				</tr>
 				<tr>
 					<td><h4>Email:</h4></td>

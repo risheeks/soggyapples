@@ -259,13 +259,25 @@ public class HomeController {
 	public String login(@RequestParam("lemail") String email, @RequestParam("lpassword") String password, HttpServletRequest request) throws IOException {        
 		HttpSession session = request.getSession();
 		System.out.println("Email: " + email + " password: " + password);
+		User user = signin(email.getBytes(), password.getBytes());
+		if(user != null) {
+			session.setAttribute("loggedInUser", user);
+		}
 		return "/pick";
 	}
 	
 	@RequestMapping(value = { "/register" }, method = RequestMethod.POST)
-	public String register(@RequestParam("email") String email, @RequestParam("password") String password, @RequestParam("confirmPassword") String confirmPassword, HttpServletRequest request) throws IOException {        
+	public String register(@RequestParam("username") String username, @RequestParam("email") String email, @RequestParam("password") String password, @RequestParam("confirmPassword") String confirmPassword, HttpServletRequest request) throws IOException {        
 		HttpSession session = request.getSession();
-		return "/about";
+		if(!password.equals(confirmPassword)) {
+			return "/pick";
+		}
+		createUser(email.getBytes(), password.getBytes(), username);
+		User user = new User(username, email, password);
+		if(user != null) {
+			session.setAttribute("loggedInUser", user);
+		}
+		return "/pick";
 	}
 	
     private String sendGet(String id, String movie_url, String suffix) throws Exception {
