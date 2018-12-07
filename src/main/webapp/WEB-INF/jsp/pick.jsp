@@ -221,11 +221,11 @@
 					<table class="table">
 						<c:forEach items="${comments}" var="comment">
 									<tr>
-										<td><h5>${comment.comment}</h5></td>
+										<td><div><p style="color:#32b9d1;">${comment.user}:</p><h5>${comment.comment}</h5></div><font size = "1">${comment.timestamp}</font></td>
 									</tr>
-									<tr>
+									<%-- <tr>
 										<td><font size = "1">${comment.timestamp}</font><br /></td>
-									</tr>
+									</tr> --%>
 						</c:forEach>
 					</table>
 				</td>
