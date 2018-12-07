@@ -217,7 +217,9 @@ public class HomeController {
 				    if (snapshot.hasChild(id)) {
 				    	String comment_key = mDatabase.push().getKey();
 				    	System.out.println("Movie exists!");
-				    	usersRef.child(id).child("comments").child(comment_key).setValueAsync(commentData);
+				    	if(!comment.equals("")) {
+				    		usersRef.child(id).child("comments").child(comment_key).setValueAsync(commentData);
+				    	}
 				    	latch.countDown();
 				    }else {
 				    	System.out.println("Invalid movie id: update()");
@@ -278,6 +280,13 @@ public class HomeController {
 			session.setAttribute("loggedInUser", user);
 		}
 		return "/pick";
+	}
+	
+	@RequestMapping(value = { "/logout" }, method = RequestMethod.POST)
+	public String logout(HttpServletRequest request) throws IOException {        
+		HttpSession session = request.getSession();
+		
+		return "/";
 	}
 	
     private String sendGet(String id, String movie_url, String suffix) throws Exception {
