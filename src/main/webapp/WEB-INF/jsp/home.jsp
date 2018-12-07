@@ -94,7 +94,7 @@ and is wrapped around the whole page content, except for the footer in this exam
   
 
 
-  <div class="w3-center w3-container w3-section w3-text-white w3-transparent" style="width:15%; margin-left:158px;">
+  <div class="w3-center w3-container w3-section w3-text-white w3-transparent" style="width:23%; margin-left:140px;">
     <div class="w3-left w3-hover-text-khaki" onclick="plusDivs(-1)">&#10094;</div>
     <div class="w3-right w3-hover-text-khaki" onclick="plusDivs(1)">&#10095;</div>
     <!-- <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(1)"></span>
