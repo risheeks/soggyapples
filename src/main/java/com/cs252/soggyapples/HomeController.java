@@ -147,7 +147,7 @@ public class HomeController {
 				  public void onDataChange(DataSnapshot snapshot) {
 				    if (snapshot.hasChild(id)) {
 				    	//String comment_key = mDatabase.push().getKey();
-				    	System.out.println("Movie exists!");
+				    	
 				    	//usersRef.child(id).child("comments").child(comment_key).setValueAsync(commentData);
 				    }else {
 				    	//String comment_key = mDatabase.push().getKey();  
@@ -194,7 +194,7 @@ public class HomeController {
 			
 			DatabaseReference usersRef = mDatabase.child("Movies");
 			Map<String, String> movieData = new HashMap<String, String>();
-			Map<String, String> commentData = new HashMap<String, String>();
+			Map<String, Object> commentData = new HashMap<String, Object>();
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 			long time = timestamp.getTime();
 			String key = mDatabase.push().getKey();   
@@ -210,13 +210,16 @@ public class HomeController {
     		int mDay = calendar.get(Calendar.DAY_OF_MONTH);
     		int mHour = calendar.get(Calendar.HOUR);
     		int mMinute = calendar.get(Calendar.MINUTE);
-			commentData.put("timestamp", "Time:"+mHour+ ":" +mMinute + "   Date " + mDay + "-" + mMonth + "-" + mYear);
-			
+    		String time_stamp = "Time:"+mHour+ ":" +mMinute + "   Date " + mDay + "-" + mMonth + "-" + mYear;
+			String username = ((User)session.getAttribute("loggedInUser")).getUsername();
+    		commentData.put("timestamp", time_stamp);
+			commentData.put("user", username);
+			//Comment c = new Comment(time_stamp, comment, username);
 			usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
 				  public void onDataChange(DataSnapshot snapshot) {
 				    if (snapshot.hasChild(id)) {
 				    	String comment_key = mDatabase.push().getKey();
-				    	System.out.println("Movie exists!");
+				    	
 				    	if(!comment.equals("")) {
 				    		usersRef.child(id).child("comments").child(comment_key).setValueAsync(commentData);
 				    	}
@@ -335,6 +338,7 @@ public class HomeController {
     	            			Comment comment = userSnapshot.getValue(Comment.class);
     	            			//System.out.println(comment.getTimestamp());
     	            			comments.add(comment);
+    	            			System.out.println(comment.user);
     	            		}
     	            	}
     	            }

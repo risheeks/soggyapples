@@ -16,11 +16,8 @@ import com.google.firebase.FirebaseOptions;
 
 @SpringBootApplication
 public class SoggyapplesApplication {
-//	static String sid_path = "/Users/SiD/Desktop/coding/soggyapples/src/main/webapp/WEB-INF/serviceAccountKey.json";
-//	static String risheek_path = "/Users/risheek/projects/soggyapples/src/main/webapp/WEB-INF/serviceAccountKey.json";
 	public static void main(String[] args) throws IOException {
-		//webapp/WEB-INF/jsp/serviceAccountKey.json
-		//java/com/cs252/soggyapples/SoggyapplesApplication.java
+		
 		FileInputStream serviceAccount = new FileInputStream("serviceAccountKey.json");
 		FirebaseOptions options = new FirebaseOptions.Builder()
 			    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
