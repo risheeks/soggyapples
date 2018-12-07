@@ -30,10 +30,15 @@ h1,h2,h3,h4,h5,h6 {font-family: "Oswald"}
 body {font-family: "Open Sans"}
 #limit {max-width: 500px;}
 .mySlides {display:none;
-			display: block;  
-    margin-right: 1150px;
-    margin-left: 150px;
+			display: block; 
+			margin-right: 1650px;
+   			margin-left: 150px; 
     
+    
+}
+body {
+ 
+  background-image: url(https://www.w3schools.com//w3images/mist.jpg);
 }
 .w3-left, .w3-right, .w3-badge {cursor:pointer}
 .w3-badge {height:13px;width:13px;padding:0}
@@ -78,16 +83,14 @@ and is wrapped around the whole page content, except for the footer in this exam
   	</form> 
   </div>
   
-	<h1 class="w3-center w3-large"><b>Current Movies in Theater!!!!</b></h1>
+	<h1 class="w3-center w3-xxlarge"><b>Current Movies in Theater!!!!</b></h1>
   	<c:forEach items="${movies}" var="movie">
-
-		<a class="mySlides" href="/pick-${movie.id}"><img  height="300" width="250" src="https://image.tmdb.org/t/p/w500/${movie.posterPath}"> <h2 class="w3-center">${movie.title}</h2></a>
+		<a class="mySlides w3-center" href="/pick-${movie.id}"><img  height="300" width="250" src="https://image.tmdb.org/t/p/w500/${movie.posterPath}"> <h1 style="margin-bottom:170px;" class="w3-display-bottommiddle">${movie.title}</h1> <h4 style="margin-left:50px;" class="w3-display-bottommiddle">${movie.description}</h4></a>                                                                     
 	</c:forEach>
   
 
- 
 
-  <div class="w3-left w3-container w3-section w3-text-white w3-display-bottomleft" style="width:15%; margin-left:158px;">
+  <div class="w3-center w3-container w3-section w3-text-white w3-light-grey" style="width:15%; margin-left:158px;">
     <div class="w3-left w3-hover-text-khaki" onclick="plusDivs(-1)">&#10094;</div>
     <div class="w3-right w3-hover-text-khaki" onclick="plusDivs(1)">&#10095;</div>
     <!-- <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(1)"></span>
@@ -139,7 +142,7 @@ function showDivs(n) {
   }
   if (slideIndex > x.length) {slideIndex = 1} 
   x[slideIndex-1].style.display = "block";  
-  setTimeout(showDivs, 2000);
+  setTimeout(showDivs, 5000);
   dots[slideIndex-1].className += " w3-white";
 
 }
